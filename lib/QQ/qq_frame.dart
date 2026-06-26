@@ -5,7 +5,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_qq/QQ/bodys/user_contacts_list_page.dart';
 import 'package:flutter_qq/QQ/bodys/user_message_list_page.dart';
+import 'package:flutter_qq/QQ/user_option_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 class QQFrame extends StatefulWidget {
   const QQFrame({super.key});
@@ -20,11 +22,36 @@ class _QQFrameState extends State<QQFrame> with AutomaticKeepAliveClientMixin {
     UserMessageListPage(),
     UserContactsListPage(),
   ];
+
+  double _dragStartX = 0;
+  bool _isEdgeSwipe = false;
+
+  void _onDragStart(DragStartDetails details) {
+    _dragStartX = details.globalPosition.dx;
+    _isEdgeSwipe = _dragStartX < 30;
+  }
+
+  void _onDragEnd(DragEndDetails details) {
+    if (_isEdgeSwipe && details.primaryVelocity != null && details.primaryVelocity! > 500) {
+      Get.to(const UserOptionPage(), transition: Transition.leftToRight);
+    }
+    _isEdgeSwipe = false;
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
       extendBody: true,
+      body: GestureDetector(
+        onHorizontalDragStart: _onDragStart,
+        onHorizontalDragEnd: _onDragEnd,
+        behavior: HitTestBehavior.translucent,
+        child: IndexedStack(
+          index: index,
+          children: pages,
+        ),
+      ),
       bottomNavigationBar: RepaintBoundary(
         child: ClipRRect(
           borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
@@ -94,10 +121,6 @@ class _QQFrameState extends State<QQFrame> with AutomaticKeepAliveClientMixin {
             ),
           ),
         ),
-      ),
-      body: IndexedStack(
-        index: index,
-        children: pages,
       ),
     );
   }

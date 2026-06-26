@@ -293,109 +293,108 @@ class _UserMessageListPageState extends State<UserMessageListPage>
                 ),
               ],
             ),
-            child: GestureDetector(
-              onTap: () {
-                Get.to(const UserDevicePage(),
-                    transition: Transition.rightToLeft);
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 16, vertical: 14),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF12B7F5).withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                        child: SvgPicture.asset(
-                          "assets/svg/Monitor.svg",
-                          color: const Color(0xFF12B7F5),
-                          height: 20,
+            child: loading
+                ? Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Get.to(const UserDevicePage(),
+                              transition: Transition.rightToLeft);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 14),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 36,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF12B7F5)
+                                      .withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Center(
+                                  child: SvgPicture.asset(
+                                    "assets/svg/Monitor.svg",
+                                    color: const Color(0xFF12B7F5),
+                                    height: 20,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              const Expanded(
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "已登录 Windows",
+                                      style: TextStyle(
+                                        color: Color(0xFF1A1A1A),
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500),
+                                    ),
+                                    SizedBox(height: 2),
+                                    Text(
+                                      "ZY-PC",
+                                      style: TextStyle(
+                                        color: Color(0xFF8A8A8E),
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SvgPicture.asset(
+                                "assets/svg/chevronright.svg",
+                                height: 20,
+                                color: const Color(0xFFC7C7CC),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    const Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "已登录 Windows",
-                            style: TextStyle(
-                              color: Color(0xFF1A1A1A),
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500),
-                          ),
-                          SizedBox(height: 2),
-                          Text(
-                            "ZY-PC",
-                            style: TextStyle(
-                              color: Color(0xFF8A8A8E),
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.only(left: 64),
+                        child: Divider(
+                          thickness: 0.3,
+                          color: Colors.grey.withOpacity(0.2),
+                          height: 1,
+                        ),
                       ),
-                    ),
-                    SvgPicture.asset(
-                      "assets/svg/chevronright.svg",
-                      height: 20,
-                      color: const Color(0xFFC7C7CC),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          loading
-              ? Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.03),
-                        blurRadius: 10,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: List.generate(data.length, (index) {
-                      return Column(
-                        children: [
-                          GestureDetector(
-                              onTap: () {
-                                Get.to(
-                                    MessageDetailsPage(
-                                        msgModel: data[index]),
-                                    transition: Transition.rightToLeft);
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 10),
-                                child: msgItem1(data[index]),
-                              )),
-                          if (index != data.length - 1)
-                            Padding(
-                              padding: const EdgeInsets.only(left: 78),
-                              child: Divider(
-                                thickness: 0.3,
-                                color: Colors.grey.withOpacity(0.2),
-                                height: 1,
+                      ...List.generate(data.length, (index) {
+                        return Column(
+                          children: [
+                            GestureDetector(
+                                onTap: () {
+                                  Get.to(
+                                      MessageDetailsPage(
+                                          msgModel: data[index]),
+                                      transition:
+                                          Transition.rightToLeft);
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 10),
+                                  child: msgItem1(data[index]),
+                                )),
+                            if (index != data.length - 1)
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 78),
+                                child: Divider(
+                                  thickness: 0.3,
+                                  color: Colors.grey.withOpacity(0.2),
+                                  height: 1,
+                                ),
                               ),
-                            ),
-                        ],
-                      );
-                    }),
-                  ),
-                )
-              : Shimmer.fromColors(
+                          ],
+                        );
+                      }),
+                    ],
+                  )
+                : Shimmer.fromColors(
                   baseColor: Colors.white,
                   highlightColor:
                       const Color.fromARGB(255, 240, 240, 240),

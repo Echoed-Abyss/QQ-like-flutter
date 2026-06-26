@@ -269,7 +269,7 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
                   if (mounted) setState(() {});
                 },
                 child: ListView.separated(
-                  padding: EdgeInsets.fromLTRB(12, 12, 12, MediaQuery.of(context).padding.bottom + 80),
+                  padding: EdgeInsets.fromLTRB(12, MediaQuery.of(context).padding.bottom + 72, 12, 12),
                   reverse: true,
                   controller: scrollController,
                   physics: const AlwaysScrollableScrollPhysics(
