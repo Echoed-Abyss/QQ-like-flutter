@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_qq/QQ/login_page.dart';
 import 'package:flutter_qq/QQ/qq_frame.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
@@ -54,7 +55,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const QQFrame(),
+      home: const LoginPage(),
     );
   }
 }
