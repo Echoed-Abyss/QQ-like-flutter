@@ -46,11 +46,11 @@ class MyApp extends StatelessWidget {
           unselectedItemColor: Color(0xFF8A8A8E),
           type: BottomNavigationBarType.fixed,
         ),
-        cardTheme: CardThemeData(
+        cardTheme: const CardTheme(
           elevation: 0,
           color: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.all(Radius.circular(16)),
           ),
         ),
       ),

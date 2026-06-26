@@ -404,8 +404,9 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
                               height: 36,
                               child: ElevatedButton(
                                 onPressed: () {
-                                  if (textEditingController.text.isEmpty)
+                                  if (textEditingController.text.isEmpty) {
                                     return;
+                                  }
                                   msgs.insert(
                                       0,
                                       UserSendUserMsgModel(
@@ -446,8 +447,8 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
                                       ),
                                     ),
                                     backgroundColor:
-                                        MaterialStatePropertyAll(
-                                            const Color(0xFF12B7F5))),
+                                        const MaterialStatePropertyAll(
+                                            Color(0xFF12B7F5))),
                                 child: const Text(
                                   "发送",
                                   style: TextStyle(
