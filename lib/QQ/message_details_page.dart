@@ -369,7 +369,7 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
                           ),
                           child: Center(
                             child: Icon(
-                              Icons.sentiment_satisfied_alt_outlined,
+                              Icons.insert_emoticon,
                               color: showEmoji
                                   ? const Color(0xFF12B7F5)
                                   : const Color(0xFF1A1A1A),
@@ -538,17 +538,17 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
           ),
           child: Row(
             children: [
-              _buildBottomEmojiTab(Icons.search, "", false),
+              _buildBottomEmojiTab(Icons.search, false),
               const SizedBox(width: 12),
-              _buildBottomEmojiTab(Icons.sentiment_satisfied_alt, "", true),
+              _buildBottomEmojiTab(Icons.insert_emoticon, true),
               const SizedBox(width: 12),
-              _buildBottomEmojiTab(Icons.auto_awesome, "", false),
+              _buildBottomEmojiTab(Icons.stars, false),
               const SizedBox(width: 12),
-              _buildBottomEmojiTab(Icons.favorite_border, "", false),
+              _buildBottomEmojiTab(Icons.favorite_border, false),
               const SizedBox(width: 12),
-              _buildBottomEmojiTab(Icons.gif, "", false),
+              _buildBottomEmojiTab(Icons.image, false),
               const SizedBox(width: 12),
-              _buildBottomEmojiTab(Icons.smart_toy_outlined, "", false),
+              _buildBottomEmojiTab(Icons.extension, false),
               const Spacer(),
             ],
           ),
@@ -597,7 +597,7 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
     );
   }
 
-  Widget _buildBottomEmojiTab(IconData icon, String label, bool selected) {
+  Widget _buildBottomEmojiTab(IconData icon, bool selected) {
     return Container(
       width: 40,
       height: 40,

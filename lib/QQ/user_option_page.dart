@@ -28,18 +28,18 @@ class _UserOptionPageState extends State<UserOptionPage>
           backgroundColor: Colors.transparent,
           systemOverlayStyle: SystemUiOverlayStyle.dark,
           leadingWidth: 100,
-          leading: const TextButton.icon(
+          leading: TextButton.icon(
             onPressed: null,
-            style: ButtonStyle(
+            style: const ButtonStyle(
                 padding: MaterialStatePropertyAll(EdgeInsets.zero),
                 overlayColor:
                     MaterialStatePropertyAll(Colors.transparent)),
-            icon: Icon(
+            icon: const Icon(
               Icons.check_circle_outline,
               color: Color(0xFF1A1A1A),
               size: 22,
             ),
-            label: Text("打卡",
+            label: const Text("打卡",
                 style: TextStyle(color: Color(0xFF1A1A1A), fontSize: 16)),
           ),
           actions: [
