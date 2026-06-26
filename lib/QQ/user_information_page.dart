@@ -18,52 +18,41 @@ class UserInformationPage extends StatefulWidget {
 
 class _UserInformationPageState extends State<UserInformationPage>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-  double imageheight = 200;
-
-  double extrapicHeight = 0;
-
-  double dy = 0;
+  final double imageheight = 200;
+  final ValueNotifier<double> _extraPicHeight = ValueNotifier(0.0);
+  double _dy = 0;
 
   late AnimationController animatedContainer;
-
   late Animation<double> animation;
 
-  List<String> imageurl = [];
-
-  late int count = 1024;
+  final List<String> imageurl = [];
+  final int count = 1024;
 
   late Animation<double> countAnimation;
-
-  late double counticon = 18;
-
   late AnimationController countanimatedContainer;
 
-  void updateHeight(double position) {
-    if (dy == 0) {
-      dy = position;
+  void _updateHeight(double position) {
+    if (_dy == 0) {
+      _dy = position;
     }
-    var extrapicHeight1 = extrapicHeight + position - dy;
-    if (extrapicHeight1 <= -150 || extrapicHeight1 >= 200) {
+    final newHeight = _extraPicHeight.value + position - _dy;
+    if (newHeight <= -150 || newHeight >= 200) {
       return;
     }
-    extrapicHeight += position - dy;
-    setState(() {
-      dy = position;
-      extrapicHeight = extrapicHeight;
-    });
+    _extraPicHeight.value = newHeight;
+    _dy = position;
   }
 
-  void runAnimate() {
-    setState(() {
-      animation =
-          Tween(begin: extrapicHeight, end: .0).animate(animatedContainer)
-            ..addListener(() {
-              setState(() {
-                extrapicHeight = animation.value;
-              });
-            });
-      dy = 0;
-    });
+  void _runAnimate() {
+    animation = Tween(
+      begin: _extraPicHeight.value,
+      end: .0,
+    ).animate(animatedContainer)
+      ..addListener(() {
+        _extraPicHeight.value = animation.value;
+      });
+    _dy = 0;
+    animatedContainer.forward(from: .0);
   }
 
   @override
@@ -83,10 +72,9 @@ class _UserInformationPageState extends State<UserInformationPage>
 
   @override
   void dispose() {
-    if (mounted) {
-      animatedContainer.dispose();
-      countanimatedContainer.dispose();
-    }
+    _extraPicHeight.dispose();
+    animatedContainer.dispose();
+    countanimatedContainer.dispose();
     super.dispose();
   }
 
@@ -160,25 +148,28 @@ class _UserInformationPageState extends State<UserInformationPage>
           ]),
       body: Listener(
         onPointerMove: (event) {
-          updateHeight(event.position.dy / 2);
+          _updateHeight(event.position.dy / 2);
         },
         onPointerUp: (value) {
-          runAnimate();
-          animatedContainer.forward(from: .0);
+          _runAnimate();
         },
-        child: Stack(
-          children: [
-            GestureDetector(
-                onTap: () {
-                  showDialog(
-                      builder: (BuildContext context) {
-                        return const DetailPage("assets/images/dao.jpg");
-                      },
-                      context: context);
-                },
-                child: ExtendedImage.asset(
-                  "assets/images/dao.jpg",
-                  height: imageheight + extrapicHeight,
+        child: ValueListenableBuilder<double>(
+          valueListenable: _extraPicHeight,
+          builder: (context, height, child) {
+            return Stack(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    showDialog(
+                        builder: (BuildContext context) {
+                          return const DetailPage("assets/images/dao.jpg");
+                        },
+                        context: context);
+                  },
+                  child: RepaintBoundary(
+                    child: ExtendedImage.asset(
+                      "assets/images/dao.jpg",
+                      height: imageheight + height,
                   fit: BoxFit.cover,
                   width: double.infinity,
                   loadStateChanged: (state) {
@@ -204,29 +195,15 @@ class _UserInformationPageState extends State<UserInformationPage>
                     }
                     return null;
                   },
-                )
-                //  Image.asset(
-                //   "assets/images/dao.jpg",
-                //   height: imageheight + extrapicHeight,
-                //   fit: BoxFit.cover,
-                //   width: double.infinity,
-                // )
-                //  Shimmer.fromColors(
-                //   baseColor: Colors.red.withOpacity(.1),
-                //   highlightColor: Colors.yellow,
-                //   child: Image.asset(
-                //     "assets/images/dao.jpg",
-                //     height: imageheight + extrapicHeight,
-                //     fit: BoxFit.cover,
-                //     width: double.infinity,
-                //   )),
+                    ),
+                  ),
                 ),
-            ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                SizedBox(
-                  height: imageheight - 30 + extrapicHeight,
-                ),
+                ListView(
+                  padding: EdgeInsets.zero,
+                  children: [
+                    SizedBox(
+                      height: imageheight - 30 + height,
+                    ),
                 Container(
                   decoration: const BoxDecoration(
                     color: Color(0xFFF5F6F8),
@@ -865,8 +842,10 @@ class _UserInformationPageState extends State<UserInformationPage>
                   ),
                 ),
               ],
-            )
+            ),
           ],
+            );
+          },
         ),
       ),
     );
