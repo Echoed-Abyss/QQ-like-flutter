@@ -10,18 +10,23 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Flutter Demo',
+      title: 'QQ',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF12B7F5),
+          primary: const Color(0xFF12B7F5),
+        ),
+        scaffoldBackgroundColor: const Color(0xFFF5F6F8),
         iconButtonTheme: const IconButtonThemeData(
-            style: ButtonStyle(
-                overlayColor: MaterialStatePropertyAll(Colors.transparent))),
+          style: ButtonStyle(
+            overlayColor: MaterialStatePropertyAll(Colors.transparent),
+          ),
+        ),
         appBarTheme: const AppBarTheme(
           elevation: 0,
           toolbarHeight: 80,
@@ -33,6 +38,20 @@ class MyApp extends StatelessWidget {
             systemNavigationBarColor: Colors.transparent,
           ),
           iconTheme: IconThemeData(color: Color(0xFF212529)),
+        ),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          elevation: 0,
+          backgroundColor: Colors.white,
+          selectedItemColor: Color(0xFF12B7F5),
+          unselectedItemColor: Color(0xFF8A8A8E),
+          type: BottomNavigationBarType.fixed,
+        ),
+        cardTheme: CardThemeData(
+          elevation: 0,
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
         ),
       ),
       home: const QQFrame(),

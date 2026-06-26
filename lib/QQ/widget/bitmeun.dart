@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 // ignore: non_constant_identifier_names
@@ -161,24 +163,34 @@ class _BitMeunState extends State<BitMeun> with TickerProviderStateMixin {
               offset: offset,
               child: LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
-                  return Container(
-                      constraints:
-                          BoxConstraints(maxWidth: widget.offsetWidth!),
-                      transformAlignment: Alignment.topLeft,
-                      decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius:
-                              BorderRadiusDirectional.all(Radius.circular(5))),
-                      child: ListView.separated(
-                          padding: const EdgeInsets.all(10),
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            return widget.items[index];
-                          },
-                          separatorBuilder: (context, index) {
-                            return const SizedBox(height: 12);
-                          },
-                          itemCount: widget.items.length));
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                      child: Container(
+                          constraints:
+                              BoxConstraints(maxWidth: widget.offsetWidth!),
+                          transformAlignment: Alignment.topLeft,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.9),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.3),
+                              width: 0.5,
+                            ),
+                          ),
+                          child: ListView.separated(
+                              padding: const EdgeInsets.all(12),
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                return widget.items[index];
+                              },
+                              separatorBuilder: (context, index) {
+                                return const SizedBox(height: 12);
+                              },
+                              itemCount: widget.items.length)),
+                    ),
+                  );
                 },
               ),
             ),

@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:ui';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -92,59 +94,69 @@ class _UserInformationPageState extends State<UserInformationPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 250, 250, 250),
+      backgroundColor: const Color(0xFFF5F6F8),
       extendBodyBehindAppBar: true,
       appBar: StudyAppBar.MyAppBar("", context,
           backgroundColor: Colors.transparent,
-          leading: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Colors.black.withOpacity(.2),
-            ),
-            margin: const EdgeInsets.all(10),
-            child: const BackButton(
-              color: Colors.white,
-              style: ButtonStyle(
-                  padding: MaterialStatePropertyAll(EdgeInsets.zero)),
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 12),
+            child: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.black.withOpacity(0.3),
+                ),
+                margin: const EdgeInsets.all(8),
+                child: const BackButton(
+                  color: Colors.white,
+                  style: ButtonStyle(
+                      padding: MaterialStatePropertyAll(EdgeInsets.zero)),
+                ),
+              ),
             ),
           ),
           actions: [
             IconButton(
               padding: EdgeInsets.zero,
               onPressed: () {},
-              highlightColor: Colors.white.withOpacity(.1),
               icon: Container(
-                constraints: BoxConstraints.tight(const Size(35, 35)),
+                width: 36,
+                height: 36,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(100),
-                  color: Colors.black.withOpacity(.2),
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.black.withOpacity(0.3),
                 ),
                 child: const Icon(
                   Icons.qr_code,
                   color: Colors.white,
+                  size: 20,
                 ),
               ),
               style: const ButtonStyle(
                   padding: MaterialStatePropertyAll(EdgeInsets.zero)),
             ),
+            const SizedBox(width: 8),
             IconButton(
               padding: EdgeInsets.zero,
               onPressed: () {},
-              highlightColor: Colors.white.withOpacity(.1),
               icon: Container(
-                constraints: BoxConstraints.tight(const Size(35, 35)),
+                width: 36,
+                height: 36,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(100),
-                  color: Colors.black.withOpacity(.2),
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.black.withOpacity(0.3),
                 ),
                 child: const Icon(
-                  Icons.settings,
+                  Icons.more_horiz,
                   color: Colors.white,
+                  size: 22,
                 ),
               ),
               style: const ButtonStyle(
                   padding: MaterialStatePropertyAll(EdgeInsets.zero)),
-            )
+            ),
+            const SizedBox(width: 12),
           ]),
       body: Listener(
         onPointerMove: (event) {
@@ -217,27 +229,35 @@ class _UserInformationPageState extends State<UserInformationPage>
                 ),
                 Container(
                   decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 250, 250, 250),
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(15),
-                          topRight: Radius.circular(15))),
+                    color: Color(0xFFF5F6F8),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(24),
+                    ),
+                  ),
                   child: Column(
                     children: [
                       Column(
                         children: [
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 16),
                           Padding(
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 12.0),
+                                const EdgeInsets.symmetric(horizontal: 16.0),
                             child: Container(
                               decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12)),
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.03),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
                               child: Column(
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
+                                    padding: const EdgeInsets.all(20),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -254,53 +274,70 @@ class _UserInformationPageState extends State<UserInformationPage>
                                                     },
                                                     context: context);
                                               },
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 10),
-                                                child: Hero(
-                                                  tag: "assets/images/bit7.jpg",
+                                              child: Hero(
+                                                tag: "assets/images/bit7.jpg",
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.black
+                                                            .withOpacity(0.1),
+                                                        blurRadius: 10,
+                                                        offset:
+                                                            const Offset(0, 4),
+                                                      ),
+                                                    ],
+                                                  ),
                                                   child: ClipOval(
                                                     child: Image.asset(
                                                       "assets/images/bit7.jpg",
                                                       alignment:
                                                           Alignment.topCenter,
                                                       fit: BoxFit.cover,
-                                                      width: 70,
-                                                      height: 70,
+                                                      width: 72,
+                                                      height: 72,
                                                     ),
                                                   ),
                                                 ),
                                               ),
                                             ),
-                                            const SizedBox(width: 10),
+                                            const SizedBox(width: 14),
                                             Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Shimmer.fromColors(
-                                                  baseColor: Colors.black,
-                                                  highlightColor: Colors.red,
+                                                  baseColor:
+                                                      const Color(0xFF1A1A1A),
+                                                  highlightColor:
+                                                      const Color(0xFFFF3B30),
                                                   child: const Text(
                                                     "7_bit",
                                                     style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.w600),
+                                                      fontSize: 19,
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      color: Color(0xFF1A1A1A),
+                                                    ),
                                                   ),
                                                 ),
+                                                const SizedBox(height: 4),
                                                 const Text.rich(
                                                   TextSpan(children: [
                                                     TextSpan(
-                                                        text: "QQ号：210014468",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.grey)),
+                                                      text: "QQ号：210014468",
+                                                      style: TextStyle(
+                                                          color:
+                                                              Color(0xFF8A8A8E)),
+                                                    ),
                                                     TextSpan(
-                                                        text: " (ID：BitSeven)")
+                                                        text: " (ID：BitSeven)",
+                                                        style: TextStyle(
+                                                            color: Color(
+                                                                0xFF8A8A8E))),
                                                   ]),
-                                                  style:
-                                                      TextStyle(fontSize: 12),
+                                                  style: TextStyle(fontSize: 12),
                                                 )
                                               ],
                                             ),
@@ -308,9 +345,8 @@ class _UserInformationPageState extends State<UserInformationPage>
                                         ),
                                         Column(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.center,
                                           children: [
-                                            const SizedBox(height: 5),
                                             GestureDetector(
                                               onTap: () {
                                                 countanimatedContainer.repeat(
@@ -318,136 +354,232 @@ class _UserInformationPageState extends State<UserInformationPage>
                                               },
                                               child: ScaleTransition(
                                                 scale: countAnimation,
-                                                child: SvgPicture.asset(
-                                                  "assets/svg/favorite.svg",
-                                                  width: counticon,
-                                                  color: Colors.red,
+                                                child: Container(
+                                                  width: 36,
+                                                  height: 36,
+                                                  decoration: BoxDecoration(
+                                                    color: const Color(0xFFFF3B30)
+                                                        .withOpacity(0.1),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  child: Center(
+                                                    child: SvgPicture.asset(
+                                                      "assets/svg/favorite.svg",
+                                                      width: 20,
+                                                      color: const Color(
+                                                          0xFFFF3B30),
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                            const SizedBox(height: 5),
+                                            const SizedBox(height: 6),
                                             Text(
                                               "$count",
-                                              style:
-                                                  const TextStyle(fontSize: 13),
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                color: Color(0xFF8A8A8E),
+                                              ),
                                             )
                                           ],
                                         ),
                                       ],
                                     ),
                                   ),
-                                  Container(
+                                  Padding(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 20),
-                                    height: 50,
-                                    child: Row(
-                                      children: [
-                                        const Flexible(
-                                          child: Row(
-                                            children: [
-                                              SizedBox(
-                                                child: Icon(
-                                                  Icons.male,
-                                                  color: Colors.blue,
-                                                ),
-                                              ),
-                                              SizedBox(width: 5),
-                                              Flexible(
-                                                child: Text.rich(
-                                                  TextSpan(children: [
-                                                    TextSpan(text: "男"),
-                                                    TextSpan(text: " | "),
-                                                    TextSpan(text: "1024岁"),
-                                                    TextSpan(text: " | "),
-                                                    TextSpan(text: "巨蟹座"),
-                                                    TextSpan(text: " | "),
-                                                    TextSpan(text: "来自中国"),
-                                                    TextSpan(text: " | "),
-                                                    TextSpan(text: "IT"),
-                                                  ]),
-                                                  style: TextStyle(
-                                                      color: Colors.grey,
-                                                      fontSize: 15),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  maxLines: 1,
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        SvgPicture.asset(
-                                          "assets/svg/chevronright.svg",
-                                          height: 30,
-                                          color: Colors.grey,
-                                        )
-                                      ],
+                                    child: Divider(
+                                      thickness: 0.3,
+                                      height: 1,
+                                      color: Colors.grey.withOpacity(0.2),
                                     ),
                                   ),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20, vertical: 10),
-                                    child: Row(
-                                      children: [
-                                        Flexible(
-                                          child: Row(
-                                            children: [
-                                              const Flexible(
-                                                child: Text(
-                                                  "sex robot",
-                                                  style:
-                                                      TextStyle(fontSize: 15),
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ),
-                                              const SizedBox(width: 5),
-                                              SvgPicture.asset(
-                                                "assets/svg/edit.svg",
-                                                height: 15,
-                                                color: Colors.grey,
-                                              )
-                                            ],
+                                  SizedBox(
+                                    height: 52,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: 28,
+                                            height: 28,
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFF007AFF)
+                                                  .withOpacity(0.1),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            child: const Icon(
+                                              Icons.male,
+                                              color: Color(0xFF007AFF),
+                                              size: 16,
+                                            ),
                                           ),
-                                        ),
-                                        SvgPicture.asset(
-                                          "assets/svg/chevronright.svg",
-                                          height: 30,
-                                          color: Colors.grey,
-                                        )
-                                      ],
+                                          const SizedBox(width: 10),
+                                          const Expanded(
+                                            child: Text.rich(
+                                              TextSpan(children: [
+                                                TextSpan(
+                                                    text: "男",
+                                                    style: TextStyle(
+                                                        color:
+                                                            Color(0xFF1A1A1A))),
+                                                TextSpan(
+                                                    text: " | ",
+                                                    style: TextStyle(
+                                                        color:
+                                                            Color(0xFFC7C7CC))),
+                                                TextSpan(
+                                                    text: "1024岁",
+                                                    style: TextStyle(
+                                                        color:
+                                                            Color(0xFF1A1A1A))),
+                                                TextSpan(
+                                                    text: " | ",
+                                                    style: TextStyle(
+                                                        color:
+                                                            Color(0xFFC7C7CC))),
+                                                TextSpan(
+                                                    text: "巨蟹座",
+                                                    style: TextStyle(
+                                                        color:
+                                                            Color(0xFF1A1A1A))),
+                                                TextSpan(
+                                                    text: " | ",
+                                                    style: TextStyle(
+                                                        color:
+                                                            Color(0xFFC7C7CC))),
+                                                TextSpan(
+                                                    text: "来自中国",
+                                                    style: TextStyle(
+                                                        color:
+                                                            Color(0xFF1A1A1A))),
+                                                TextSpan(
+                                                    text: " | ",
+                                                    style: TextStyle(
+                                                        color:
+                                                            Color(0xFFC7C7CC))),
+                                                TextSpan(
+                                                    text: "IT",
+                                                    style: TextStyle(
+                                                        color:
+                                                            Color(0xFF1A1A1A))),
+                                              ]),
+                                              style: TextStyle(fontSize: 14),
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                            ),
+                                          ),
+                                          SvgPicture.asset(
+                                            "assets/svg/chevronright.svg",
+                                            height: 18,
+                                            color: const Color(0xFFC7C7CC),
+                                          )
+                                        ],
+                                      ),
                                     ),
-                                  )
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    child: Divider(
+                                      thickness: 0.3,
+                                      height: 1,
+                                      color: Colors.grey.withOpacity(0.2),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 52,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20),
+                                      child: Row(
+                                        children: [
+                                          const Expanded(
+                                            child: Text(
+                                              "sex robot",
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Color(0xFF1A1A1A),
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          SvgPicture.asset(
+                                            "assets/svg/edit.svg",
+                                            height: 14,
+                                            color: const Color(0xFFC7C7CC),
+                                          ),
+                                          const SizedBox(width: 4),
+                                          SvgPicture.asset(
+                                            "assets/svg/chevronright.svg",
+                                            height: 18,
+                                            color: const Color(0xFFC7C7CC),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
                                 ],
                               ),
                             ),
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 12),
                           Padding(
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 12.0),
+                                const EdgeInsets.symmetric(horizontal: 16.0),
                             child: Container(
                               decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12)),
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.02),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 20),
-                              height: 50,
+                              height: 52,
                               child: Row(
                                 children: [
                                   Flexible(
                                     child: Row(
                                       children: [
-                                        SvgPicture.asset(
-                                          "assets/svg/document 1.svg",
-                                          width: 18,
+                                        Container(
+                                          width: 28,
+                                          height: 28,
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFFFF9500)
+                                                .withOpacity(0.1),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          child: Center(
+                                            child: SvgPicture.asset(
+                                              "assets/svg/document 1.svg",
+                                              width: 16,
+                                              color:
+                                                  const Color(0xFFFF9500),
+                                            ),
+                                          ),
                                         ),
                                         const SizedBox(width: 10),
                                         const Expanded(
                                           child: Text(
                                             "资料完成度80%",
-                                            style: TextStyle(fontSize: 15),
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Color(0xFF1A1A1A),
+                                            ),
                                             overflow: TextOverflow.ellipsis,
                                             maxLines: 1,
                                           ),
@@ -459,12 +591,16 @@ class _UserInformationPageState extends State<UserInformationPage>
                                     children: [
                                       const Text(
                                         "去完善",
-                                        style: TextStyle(color: Colors.blue),
+                                        style: TextStyle(
+                                          color: Color(0xFF12B7F5),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
                                       SvgPicture.asset(
                                         "assets/svg/chevronright.svg",
-                                        height: 30,
-                                        color: Colors.grey,
+                                        height: 18,
+                                        color: const Color(0xFFC7C7CC),
                                       ),
                                     ],
                                   )
@@ -472,24 +608,24 @@ class _UserInformationPageState extends State<UserInformationPage>
                               ),
                             ),
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 12),
                           Padding(
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 12.0),
+                                const EdgeInsets.symmetric(horizontal: 16.0),
                             child: Container(
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(12),
-                                gradient: const LinearGradient(
-                                    begin: Alignment.topCenter, //渐变开始于上面的中间开始
-                                    end: Alignment.bottomCenter, //渐变结束于下面的中间
-                                    colors: [
-                                      Colors.white,
-                                      Color.fromARGB(255, 250, 250, 250)
-                                    ]),
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.02),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
                               ),
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
+                                  horizontal: 20, vertical: 16),
                               child: Column(
                                 children: [
                                   Row(
@@ -497,16 +633,33 @@ class _UserInformationPageState extends State<UserInformationPage>
                                       Expanded(
                                         child: Row(
                                           children: [
-                                            SvgPicture.asset(
-                                              "assets/svg/Star.svg",
-                                              width: 18,
-                                              color: Colors.black,
+                                            Container(
+                                              width: 28,
+                                              height: 28,
+                                              decoration: BoxDecoration(
+                                                color: const Color(0xFFFFCC00)
+                                                    .withOpacity(0.15),
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              child: Center(
+                                                child: SvgPicture.asset(
+                                                  "assets/svg/Star.svg",
+                                                  width: 16,
+                                                  color:
+                                                      const Color(0xFFFFB800),
+                                                ),
+                                              ),
                                             ),
                                             const SizedBox(width: 10),
                                             const Expanded(
                                               child: Text(
                                                 "QQ空间",
-                                                style: TextStyle(fontSize: 15),
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Color(0xFF1A1A1A),
+                                                ),
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 1,
                                               ),
@@ -518,76 +671,75 @@ class _UserInformationPageState extends State<UserInformationPage>
                                         children: [
                                           const Text(
                                             "分享新鲜事",
-                                            style:
-                                                TextStyle(color: Colors.blue),
+                                            style: TextStyle(
+                                              color: Color(0xFF12B7F5),
+                                              fontSize: 14,
+                                            ),
                                           ),
                                           SvgPicture.asset(
                                             "assets/svg/chevronright.svg",
-                                            height: 30,
-                                            color: Colors.grey,
+                                            height: 18,
+                                            color: const Color(0xFFC7C7CC),
                                           ),
                                         ],
                                       )
                                     ],
                                   ),
-                                  const SizedBox(height: 10),
+                                  const SizedBox(height: 14),
                                   SizedBox(
                                     height: 100,
                                     width: double.infinity,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(3),
-                                      child: ListView.separated(
-                                        shrinkWrap: true,
-                                        scrollDirection: Axis.horizontal,
-                                        itemBuilder: (c, i) {
-                                          return GestureDetector(
-                                            onTap: () {
-                                              showDialog(
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return DetailPage(
-                                                        imageurl[i]);
-                                                  },
-                                                  context: context);
-                                            },
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(3),
-                                              child: ExtendedImage.asset(
-                                                imageurl[i],
-                                                height: 100,
-                                                width: 100,
-                                                fit: BoxFit.cover,
-                                                loadStateChanged: (state) {
-                                                  if (state
-                                                          .extendedImageLoadState ==
-                                                      LoadState.loading) {
-                                                    return Container(
-                                                        color: Colors.white,
-                                                        height: 100,
-                                                        width: 100);
-                                                  } else if (state
-                                                          .extendedImageLoadState ==
-                                                      LoadState.failed) {
-                                                    return Container(
-                                                        color: Colors.white,
-                                                        height: 100,
-                                                        width: 100);
-                                                  }
-                                                  return null;
+                                    child: ListView.separated(
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: (c, i) {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            showDialog(
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return DetailPage(
+                                                      imageurl[i]);
                                                 },
-                                              ),
+                                                context: context);
+                                          },
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            child: ExtendedImage.asset(
+                                              imageurl[i],
+                                              height: 100,
+                                              width: 100,
+                                              fit: BoxFit.cover,
+                                              loadStateChanged: (state) {
+                                                if (state
+                                                        .extendedImageLoadState ==
+                                                    LoadState.loading) {
+                                                  return Container(
+                                                      color: Colors.white,
+                                                      height: 100,
+                                                      width: 100);
+                                                } else if (state
+                                                        .extendedImageLoadState ==
+                                                    LoadState.failed) {
+                                                  return Container(
+                                                      color: Colors.white,
+                                                      height: 100,
+                                                      width: 100);
+                                                }
+                                                return null;
+                                              },
                                             ),
-                                          );
-                                        },
-                                        itemCount: imageurl.length,
-                                        separatorBuilder:
-                                            (BuildContext context, int index) {
-                                          return const SizedBox(
-                                            width: 5,
-                                          );
-                                        },
-                                      ),
+                                          ),
+                                        );
+                                      },
+                                      itemCount: imageurl.length,
+                                      separatorBuilder:
+                                          (BuildContext context, int index) {
+                                        return const SizedBox(
+                                          width: 8,
+                                        );
+                                      },
                                     ),
                                   ),
                                   const SizedBox(height: 20),
@@ -596,16 +748,33 @@ class _UserInformationPageState extends State<UserInformationPage>
                                       Expanded(
                                         child: Row(
                                           children: [
-                                            SvgPicture.asset(
-                                              "assets/svg/More_Grid_Big.svg",
-                                              width: 18,
-                                              color: Colors.black,
+                                            Container(
+                                              width: 28,
+                                              height: 28,
+                                              decoration: BoxDecoration(
+                                                color: const Color(0xFF5856D6)
+                                                    .withOpacity(0.1),
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              child: Center(
+                                                child: SvgPicture.asset(
+                                                  "assets/svg/More_Grid_Big.svg",
+                                                  width: 16,
+                                                  color:
+                                                      const Color(0xFF5856D6),
+                                                ),
+                                              ),
                                             ),
                                             const SizedBox(width: 10),
                                             const Expanded(
                                               child: Text(
                                                 "精选照片",
-                                                style: TextStyle(fontSize: 15),
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Color(0xFF1A1A1A),
+                                                ),
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 1,
                                               ),
@@ -617,13 +786,15 @@ class _UserInformationPageState extends State<UserInformationPage>
                                         children: [
                                           const Text(
                                             "添加精美照片、展示个性的你",
-                                            style:
-                                                TextStyle(color: Colors.grey),
+                                            style: TextStyle(
+                                              color: Color(0xFF8A8A8E),
+                                              fontSize: 12,
+                                            ),
                                           ),
                                           SvgPicture.asset(
                                             "assets/svg/chevronright.svg",
-                                            height: 30,
-                                            color: Colors.grey,
+                                            height: 18,
+                                            color: const Color(0xFFC7C7CC),
                                           ),
                                         ],
                                       ),
@@ -645,74 +816,54 @@ class _UserInformationPageState extends State<UserInformationPage>
             Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ButtonStyle(
-                            elevation: const MaterialStatePropertyAll(0),
-                            shape: MaterialStatePropertyAll(
-                              RoundedRectangleBorder(
-                                side: BorderSide(
-                                    color: Colors.grey.shade400, width: .8),
-                                borderRadius: BorderRadius.circular(3),
-                              ),
-                            ),
-                            backgroundColor:
-                                const MaterialStatePropertyAll(Colors.white)),
-                        child: const AutoSizeText(
-                          '个性名片',
-                          style: TextStyle(color: Colors.black, fontSize: 16),
-                          maxLines: 1,
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.9),
+                        border: Border(
+                          top: BorderSide(
+                            color: Colors.grey.withOpacity(0.1),
+                            width: 0.5,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: ElevatedButton(
-                          onPressed: () {},
-                          style: ButtonStyle(
-                              elevation: const MaterialStatePropertyAll(0),
-                              shape: MaterialStatePropertyAll(
-                                RoundedRectangleBorder(
-                                  side: BorderSide(
-                                      color: Colors.grey.shade400, width: .8),
-                                  borderRadius: BorderRadius.circular(3),
-                                ),
-                              ),
-                              backgroundColor:
-                                  const MaterialStatePropertyAll(Colors.white)),
-                          child: const AutoSizeText(
-                            '编辑资料',
-                            style: TextStyle(color: Colors.black, fontSize: 16),
-                            maxLines: 1,
-                          )),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ButtonStyle(
-                            shape: MaterialStatePropertyAll(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(3),
-                              ),
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: _buildActionButton(
+                              '个性名片',
+                              const Color(0xFF8A8A8E),
+                              Colors.white,
+                              borderColor: const Color(0xFFE5E5EA),
                             ),
-                            backgroundColor:
-                                MaterialStatePropertyAll(Colors.blue.shade400)),
-                        child: const Text(
-                          "发消息",
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                        ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _buildActionButton(
+                              '编辑资料',
+                              const Color(0xFF8A8A8E),
+                              Colors.white,
+                              borderColor: const Color(0xFFE5E5EA),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _buildActionButton(
+                              '发消息',
+                              Colors.white,
+                              const Color(0xFF12B7F5),
+                              hasShadow: true,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(width: 10),
-                  ],
+                  ),
                 ),
-                const SizedBox(height: 20)
               ],
             )
           ],
@@ -723,6 +874,39 @@ class _UserInformationPageState extends State<UserInformationPage>
 
   @override
   bool get wantKeepAlive => true;
+
+  Widget _buildActionButton(String text, Color textColor, Color bgColor,
+      {Color? borderColor, bool hasShadow = false}) {
+    return Container(
+      height: 48,
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(14),
+        border: borderColor != null
+            ? Border.all(color: borderColor, width: 0.5)
+            : null,
+        boxShadow: hasShadow
+            ? [
+                BoxShadow(
+                  color: const Color(0xFF12B7F5).withOpacity(0.3),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ]
+            : null,
+      ),
+      child: Center(
+        child: Text(
+          text,
+          style: TextStyle(
+            color: textColor,
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class DetailPage extends StatefulWidget {

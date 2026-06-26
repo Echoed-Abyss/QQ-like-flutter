@@ -22,8 +22,7 @@ class _UserOptionPageState extends State<UserOptionPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-      //extendBodyBehindAppBar: true,
+      backgroundColor: const Color(0xFFF5F6F8),
       appBar: StudyAppBar.MyAppBar("", context,
           backgroundColor: Colors.transparent,
           systemOverlayStyle: SystemUiOverlayStyle.dark,
@@ -34,13 +33,15 @@ class _UserOptionPageState extends State<UserOptionPage>
                 onPressed: () {},
                 style: const ButtonStyle(
                     padding: MaterialStatePropertyAll(EdgeInsets.zero),
-                    overlayColor: MaterialStatePropertyAll(Colors.transparent)),
+                    overlayColor:
+                        MaterialStatePropertyAll(Colors.transparent)),
                 icon: SvgPicture.asset(
                   "assets/svg/Checkbox_Check.svg",
-                  color: Colors.black,
+                  color: const Color(0xFF1A1A1A),
                 ),
                 label: const Text("打卡",
-                    style: TextStyle(color: Colors.black, fontSize: 16)),
+                    style: TextStyle(
+                        color: Color(0xFF1A1A1A), fontSize: 16)),
               ),
               items: [
                 BitMeunItem(
@@ -66,177 +67,280 @@ class _UserOptionPageState extends State<UserOptionPage>
               ]),
           actions: [
             IconButton(
-              padding: EdgeInsets.zero,
+              padding: const EdgeInsets.only(right: 12),
               onPressed: () {
                 Get.back();
               },
-              icon: const Icon(
-                Icons.clear_rounded,
-                color: Colors.black,
-                size: 25,
+              icon: Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.close,
+                  color: Color(0xFF1A1A1A),
+                  size: 20,
+                ),
               ),
               style: const ButtonStyle(
                   padding: MaterialStatePropertyAll(EdgeInsets.zero)),
             ),
           ]),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Get.to(const UserInformationPage(),
-                              transition: Transition.downToUp);
-                        },
-                        child: Hero(
-                          tag: "assets/images/bit7.jpg",
-                          child: ClipOval(
-                            child: Image.asset(
-                              "assets/images/bit7.jpg",
-                              alignment: Alignment.topCenter,
-                              fit: BoxFit.cover,
-                              width: 60,
-                              height: 60,
+            const SizedBox(height: 10),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.03),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Get.to(const UserInformationPage(),
+                                transition: Transition.downToUp);
+                          },
+                          child: Hero(
+                            tag: "assets/images/bit7.jpg",
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: ClipOval(
+                                child: Image.asset(
+                                  "assets/images/bit7.jpg",
+                                  alignment: Alignment.topCenter,
+                                  fit: BoxFit.cover,
+                                  width: 64,
+                                  height: 64,
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 20),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Shimmer.fromColors(
-                              baseColor: Colors.black,
-                              highlightColor: Colors.red,
-                              child: const Text(
-                                "7_bit",
-                                style: TextStyle(fontSize: 17),
-                              ),
-                            ),
-                            const Text(
-                              "👑🌙✨✨",
-                            ),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Text(
-                                  "sex robot",
-                                  style: TextStyle(fontSize: 15),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Shimmer.fromColors(
+                                baseColor: const Color(0xFF1A1A1A),
+                                highlightColor: const Color(0xFFFF3B30),
+                                child: const Text(
+                                  "7_bit",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                  ),
                                 ),
-                                const SizedBox(width: 5),
-                                SvgPicture.asset(
-                                  "assets/svg/edit.svg",
-                                  height: 15,
-                                  color: Colors.grey,
-                                )
-                              ],
-                            ),
-                          ],
+                              ),
+                              const SizedBox(height: 4),
+                              const Text(
+                                "👑🌙✨✨",
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              const SizedBox(height: 4),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Flexible(
+                                    child: Text(
+                                      "sex robot",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Color(0xFF8A8A8E),
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  SvgPicture.asset(
+                                    "assets/svg/edit.svg",
+                                    height: 14,
+                                    color: const Color(0xFFC7C7CC),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                const Icon(Icons.qr_code)
-              ],
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF12B7F5).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(
+                      Icons.qr_code,
+                      color: Color(0xFF12B7F5),
+                      size: 20,
+                    ),
+                  )
+                ],
+              ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
             Expanded(
-                child: ListView(
-              children: [
-                getItem("folder", "文件"),
-                const SizedBox(height: 15),
-                getItem("upload 1", "微云"),
-                const SizedBox(height: 15),
-                getItem("picture", "相册"),
-                const SizedBox(height: 15),
-                getItem("bookmark", "收藏"),
-                const SizedBox(height: 15),
-                getItem("tethering 1", "王卡"),
-                const SizedBox(height: 15),
-                getItem("desktop 1", "我的电脑"),
-                const SizedBox(height: 15),
-                getItem("controller 1", "游戏中心"),
-              ],
+                child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.03),
+                    blurRadius: 10,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: ListView(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                children: [
+                  getItem("folder", "文件", const Color(0xFF007AFF)),
+                  _divider(),
+                  getItem("upload 1", "微云", const Color(0xFFFF9500)),
+                  _divider(),
+                  getItem("picture", "相册", const Color(0xFFFF2D55)),
+                  _divider(),
+                  getItem("bookmark", "收藏", const Color(0xFFFFCC00)),
+                  _divider(),
+                  getItem("tethering 1", "王卡", const Color(0xFF34C759)),
+                  _divider(),
+                  getItem("desktop 1", "我的电脑", const Color(0xFF5856D6)),
+                  _divider(),
+                  getItem("controller 1", "游戏中心", const Color(0xFFFF3B30)),
+                ],
+              ),
             )),
-            Row(
-              children: [
-                MyMeun(
-                    child: getItem1("setting", "设置"),
-                    context: context,
-                    isup: false,
-                    items: [
-                      BitMeunItem(
-                        icon: SvgPicture.asset("assets/svg/Group 151.svg"),
-                        onTap: () {},
-                        text: '创建DAO',
-                      ),
-                      BitMeunItem(
-                        icon: SvgPicture.asset("assets/svg/QQ.svg"),
-                        onTap: () {},
-                        text: '创建群聊',
-                      ),
-                      BitMeunItem(
-                        icon: SvgPicture.asset("assets/svg/User-plus.svg"),
-                        onTap: () {},
-                        text: '添加好友',
-                      ),
-                      BitMeunItem(
-                        icon: SvgPicture.asset("assets/svg/Expand.svg"),
-                        onTap: () {},
-                        text: '扫一扫',
-                      ),
-                    ]),
-                const SizedBox(width: 20),
-                getItem1("mobile", "等级"),
-                const SizedBox(width: 20),
-                MyMeun(
-                    child: getItem1("dark mode", "夜间"),
-                    context: context,
-                    isup: false,
-                    items: [
-                      BitMeunItem(
-                        icon: SvgPicture.asset("assets/svg/Group 151.svg"),
-                        onTap: () {},
-                        text: '创建DAO',
-                      ),
-                      BitMeunItem(
-                        icon: SvgPicture.asset("assets/svg/QQ.svg"),
-                        onTap: () {},
-                        text: '创建群聊',
-                      ),
-                      BitMeunItem(
-                        icon: SvgPicture.asset("assets/svg/User-plus.svg"),
-                        onTap: () {},
-                        text: '添加好友',
-                      ),
-                      BitMeunItem(
-                        icon: SvgPicture.asset("assets/svg/Expand.svg"),
-                        onTap: () {},
-                        text: '扫一扫',
-                      ),
-                    ]),
-                const SizedBox(width: 20),
-                getItem1("On", "天气"),
-                const SizedBox(width: 20),
-              ],
+            const SizedBox(height: 20),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.03),
+                    blurRadius: 10,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  MyMeun(
+                      child: getItem1("setting", "设置"),
+                      context: context,
+                      isup: false,
+                      items: [
+                        BitMeunItem(
+                          icon: SvgPicture.asset("assets/svg/Group 151.svg"),
+                          onTap: () {},
+                          text: '创建DAO',
+                        ),
+                        BitMeunItem(
+                          icon: SvgPicture.asset("assets/svg/QQ.svg"),
+                          onTap: () {},
+                          text: '创建群聊',
+                        ),
+                        BitMeunItem(
+                          icon: SvgPicture.asset("assets/svg/User-plus.svg"),
+                          onTap: () {},
+                          text: '添加好友',
+                        ),
+                        BitMeunItem(
+                          icon: SvgPicture.asset("assets/svg/Expand.svg"),
+                          onTap: () {},
+                          text: '扫一扫',
+                        ),
+                      ]),
+                  getItem1("mobile", "等级"),
+                  MyMeun(
+                      child: getItem1("dark mode", "夜间"),
+                      context: context,
+                      isup: false,
+                      items: [
+                        BitMeunItem(
+                          icon: SvgPicture.asset("assets/svg/Group 151.svg"),
+                          onTap: () {},
+                          text: '创建DAO',
+                        ),
+                        BitMeunItem(
+                          icon: SvgPicture.asset("assets/svg/QQ.svg"),
+                          onTap: () {},
+                          text: '创建群聊',
+                        ),
+                        BitMeunItem(
+                          icon: SvgPicture.asset("assets/svg/User-plus.svg"),
+                          onTap: () {},
+                          text: '添加好友',
+                        ),
+                        BitMeunItem(
+                          icon: SvgPicture.asset("assets/svg/Expand.svg"),
+                          onTap: () {},
+                          text: '扫一扫',
+                        ),
+                      ]),
+                  getItem1("On", "天气"),
+                ],
+              ),
             ),
             const SizedBox(
-              height: 30,
+              height: 24,
             )
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _divider() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 56),
+      child: Divider(
+        thickness: 0.3,
+        height: 1,
+        color: Colors.grey.withOpacity(0.2),
       ),
     );
   }
@@ -245,23 +349,44 @@ class _UserOptionPageState extends State<UserOptionPage>
   bool get wantKeepAlive => true;
 }
 
-Widget getItem(String svg, String str) {
-  return Row(
-    children: [
-      SvgPicture.asset("assets/svg/$svg.svg"),
-      const SizedBox(width: 15),
-      Expanded(
-        child: Text(
-          str,
-          style: const TextStyle(fontSize: 16),
+Widget getItem(String svg, String str, Color color) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+    child: Row(
+      children: [
+        Container(
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(9),
+          ),
+          child: Center(
+            child: SvgPicture.asset(
+              "assets/svg/$svg.svg",
+              width: 18,
+              color: color,
+            ),
+          ),
         ),
-      ),
-      SvgPicture.asset(
-        "assets/svg/chevronright.svg",
-        height: 35,
-        color: Colors.grey,
-      ),
-    ],
+        const SizedBox(width: 14),
+        Expanded(
+          child: Text(
+            str,
+            style: const TextStyle(
+              fontSize: 15,
+              color: Color(0xFF1A1A1A),
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+        SvgPicture.asset(
+          "assets/svg/chevronright.svg",
+          height: 18,
+          color: const Color(0xFFC7C7CC),
+        ),
+      ],
+    ),
   );
 }
 
@@ -270,12 +395,16 @@ Widget getItem1(String svg, String str) {
     children: [
       SvgPicture.asset(
         "assets/svg/$svg.svg",
-        width: 25,
+        width: 24,
+        color: const Color(0xFF1A1A1A),
       ),
-      const SizedBox(height: 5),
+      const SizedBox(height: 6),
       Text(
         str,
-        style: const TextStyle(fontSize: 14),
+        style: const TextStyle(
+          fontSize: 12,
+          color: Color(0xFF8A8A8E),
+        ),
       ),
     ],
   );

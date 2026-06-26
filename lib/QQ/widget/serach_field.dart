@@ -90,11 +90,11 @@ class _SerachFieldState extends State<BLMSerachField> {
     late Widget getsuffix = const SizedBox();
 
     return Container(
-      height: 35,
+      height: 40,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: widget.backgrund ?? const Color.fromARGB(255, 245, 245, 245),
-        borderRadius: BorderRadius.circular(8),
+        color: widget.backgrund ?? const Color(0xFFF2F2F7),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         children: [

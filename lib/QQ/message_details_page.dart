@@ -102,13 +102,11 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
   late bool isdisplay = false;
   late double height = 0;
   late ScrollController scrollController = ScrollController();
-  //实例化
   FocusNode focusNode = FocusNode();
   @override
   void initState() {
     super.initState();
     addData();
-    //监听输入框的焦点，是否弹出选项列表
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
         displaySend = true;
@@ -118,7 +116,6 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
         setState(() {});
       }
     });
-    //监听滚动到底后，列表拉到指定位置输入框获取焦点
     scrollController.addListener(() {
       if (scrollController.offset < -130) {
         FocusScope.of(context).requestFocus(focusNode);
@@ -129,91 +126,137 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 245, 245, 245),
+      backgroundColor: const Color(0xFFF0F2F5),
+      extendBody: true,
       appBar: PreferredSize(
-        preferredSize: const Size(0, 60),
-        child: getFilterWidget(
-          child: Container(
-            color: const Color.fromARGB(100, 255, 255, 255),
-            child: AppBar(
-              backgroundColor: Colors.transparent,
-              leading: const BackButton(
-                style: ButtonStyle(
-                    overlayColor: MaterialStatePropertyAll(Colors.transparent)),
-              ),
-              leadingWidth: 70,
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.msgModel.name,
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                  const SizedBox(height: 3),
-                  Row(
-                    children: [
-                      Container(
-                        width: 8,
-                        height: 8,
-                        decoration: BoxDecoration(boxShadow: const [
-                          BoxShadow(color: Color.fromARGB(255, 20, 250, 27)),
-                          BoxShadow(color: Color.fromARGB(255, 40, 248, 47))
-                        ], borderRadius: BorderRadius.circular(5)),
+        preferredSize: const Size.fromHeight(60),
+        child: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
+            child: Container(
+              color: Colors.white.withOpacity(0.8),
+              child: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                leading: Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: IconButton(
+                    style: const ButtonStyle(
+                      overlayColor:
+                          MaterialStatePropertyAll(Colors.transparent),
+                    ),
+                    icon: Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      const SizedBox(width: 5),
-                      const Text("手机在线 - 4G", style: TextStyle(fontSize: 10))
-                    ],
-                  )
+                      child: const Icon(
+                        Icons.arrow_back_ios_new,
+                        size: 18,
+                        color: Color(0xFF1A1A1A),
+                      ),
+                    ),
+                    onPressed: () => Get.back(),
+                  ),
+                ),
+                leadingWidth: 56,
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.msgModel.name,
+                      style: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF1A1A1A),
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        Container(
+                          width: 7,
+                          height: 7,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF22C55E),
+                            boxShadow: [
+                              BoxShadow(
+                                color:
+                                    const Color(0xFF22C55E).withOpacity(0.5),
+                                blurRadius: 3,
+                                spreadRadius: 0.5,
+                              ),
+                            ],
+                            borderRadius: BorderRadius.circular(3.5),
+                          ),
+                        ),
+                        const SizedBox(width: 5),
+                        const Text(
+                          "手机在线 - 4G",
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Color(0xFF8A8A8E),
+                          ),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+                actions: [
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: () {},
+                    icon: Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(
+                        Icons.qr_code_scanner,
+                        color: Color(0xFF1A1A1A),
+                        size: 18,
+                      ),
+                    ),
+                    style: const ButtonStyle(
+                        padding: MaterialStatePropertyAll(EdgeInsets.zero)),
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: () {},
+                    icon: Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(
+                        Icons.more_horiz,
+                        color: Color(0xFF1A1A1A),
+                        size: 20,
+                      ),
+                    ),
+                    style: const ButtonStyle(
+                        padding: MaterialStatePropertyAll(EdgeInsets.zero)),
+                  ),
+                  const SizedBox(width: 12),
                 ],
               ),
-              actions: [
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: () {},
-                  highlightColor: Colors.white.withOpacity(.1),
-                  icon: Container(
-                    constraints: BoxConstraints.tight(const Size(30, 30)),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                      color: Colors.black.withOpacity(0),
-                    ),
-                    child: const Icon(
-                      Icons.qr_code,
-                      color: Colors.black,
-                      size: 22,
-                    ),
-                  ),
-                  style: const ButtonStyle(
-                      padding: MaterialStatePropertyAll(EdgeInsets.zero)),
-                ),
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: () {},
-                  highlightColor: Colors.black.withOpacity(.1),
-                  icon: Container(
-                    constraints: BoxConstraints.tight(const Size(30, 30)),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                      color: Colors.black.withOpacity(0),
-                    ),
-                    child: const Icon(
-                      Icons.settings,
-                      color: Colors.black,
-                      size: 22,
-                    ),
-                  ),
-                  style: const ButtonStyle(
-                      padding: MaterialStatePropertyAll(EdgeInsets.zero)),
-                )
-              ],
             ),
           ),
         ),
       ),
       extendBodyBehindAppBar: true,
       body: SafeArea(
+        top: false,
         child: Column(
           children: [
+            const SizedBox(height: 60),
             Expanded(
               child: GestureDetector(
                 onTap: () {
@@ -224,11 +267,10 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
                   }
                   displaySend = textEditingController.text.isNotEmpty;
                   if (mounted) setState(() {});
-                  setState(() {});
                 },
                 child: ListView.separated(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                   reverse: true,
                   shrinkWrap: true,
                   controller: scrollController,
@@ -238,154 +280,207 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
                   itemCount: msgs.length,
                   itemBuilder: (context, index) {
                     return DefaultTextStyle(
-                        style:
-                            const TextStyle(fontSize: 16, color: Colors.black),
+                        style: const TextStyle(
+                            fontSize: 15, color: Color(0xFF1A1A1A)),
                         child: item(msgs[index]));
                   },
                   separatorBuilder: (BuildContext context, int index) {
-                    return const SizedBox(height: 20);
+                    return const SizedBox(height: 16);
                   },
                 ),
               ),
             ),
-            Container(
-              color: const Color.fromARGB(255, 247, 247, 247),
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  const Icon(Icons.mic_none_outlined),
-                  const SizedBox(width: 5),
-                  Expanded(
-                    child: BLMSerachField(
-                      "",
-                      "colse",
-                      textEditingController,
-                      autofocus: false,
-                      textInputType: TextInputType.text,
-                      focusNode: focusNode,
-                      onSubmitted: (p0) {
-                        if (p0.isEmpty) return;
-                        msgs.insert(
-                            0, UserSendUserMsgModel(imageurl: me, msg: p0));
-                        textEditingController.clear();
-                        //displaySend = false;
-                        Future.delayed(const Duration(seconds: 2), () {
-                          msgs.insert(
-                              0,
-                              UserSendUserMsgModel(
-                                  imageurl: widget.msgModel.imageurl,
-                                  role: "you",
-                                  msg: "${widget.msgModel.name}:$p0"));
-                          setState(() {});
-                        });
-                        setState(() {});
-                      },
-                      onchange: (text) {
-                        displaySend = textEditingController.text.isNotEmpty;
-                        if (mounted) setState(() {});
-                      },
-                      backgrund: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  SvgPicture.asset(
-                    "assets/svg/Star-Struck.svg",
-                    width: 24,
-                    height: 24,
-                  ),
-                  const SizedBox(width: 10),
-                  !displaySend
-                      ? GestureDetector(
-                          onTap: () {
-                            isdisplay = !isdisplay;
-                            if (isdisplay) {
-                              height = 300;
-                              scrollController.animateTo(-20,
-                                  curve: Curves.ease,
-                                  duration: const Duration(milliseconds: 500));
-                            } else {
-                              height = 0;
-                            }
-                            //FocusScope.of(context).requestFocus(FocusNode());
-
-                            setState(() {});
-                          },
-                          child: SvgPicture.asset(
-                            "assets/svg/Add_Plus_Circle.svg",
-                            color: !isdisplay ? Colors.black : Colors.blue,
-                          ),
-                        )
-                      : SizedBox(
-                          width: 60,
-                          height: 30,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              if (textEditingController.text.isEmpty) return;
+            ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
+                child: Container(
+                  color: Colors.white.withOpacity(0.85),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 10),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(
+                          Icons.mic_none_outlined,
+                          size: 20,
+                          color: Color(0xFF1A1A1A),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: BLMSerachField(
+                          "",
+                          "colse",
+                          textEditingController,
+                          autofocus: false,
+                          textInputType: TextInputType.text,
+                          focusNode: focusNode,
+                          onSubmitted: (p0) {
+                            if (p0.isEmpty) return;
+                            msgs.insert(0,
+                                UserSendUserMsgModel(imageurl: me, msg: p0));
+                            textEditingController.clear();
+                            Future.delayed(const Duration(seconds: 2), () {
                               msgs.insert(
                                   0,
                                   UserSendUserMsgModel(
-                                      imageurl: me,
-                                      msg: textEditingController.text));
-                              String youtext = textEditingController.text;
-                              textEditingController.clear();
-                              //displaySend = false;
-
-                              scrollController.animateTo(0,
-                                  curve: Curves.ease,
-                                  duration: const Duration(milliseconds: 300));
-                              Future.delayed(const Duration(seconds: 2), () {
-                                msgs.insert(
-                                    0,
-                                    UserSendUserMsgModel(
-                                        imageurl: widget.msgModel.imageurl,
-                                        role: "you",
-                                        msg:
-                                            "${widget.msgModel.name}:$youtext"));
-                                setState(() {});
-                              });
-
+                                      imageurl: widget.msgModel.imageurl,
+                                      role: "you",
+                                      msg:
+                                          "${widget.msgModel.name}:$p0"));
                               setState(() {});
-                            },
-                            style: ButtonStyle(
-                                padding: const MaterialStatePropertyAll(
-                                    EdgeInsets.zero),
-                                shape: MaterialStatePropertyAll(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(3),
-                                  ),
-                                ),
-                                backgroundColor: MaterialStatePropertyAll(
-                                    Colors.blue.shade400)),
-                            child: const Text(
-                              "发送",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
-                            ),
+                            });
+                            setState(() {});
+                          },
+                          onchange: (text) {
+                            displaySend =
+                                textEditingController.text.isNotEmpty;
+                            if (mounted) setState(() {});
+                          },
+                          backgrund: const Color(0xFFF2F3F5),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Center(
+                          child: SvgPicture.asset(
+                            "assets/svg/Star-Struck.svg",
+                            width: 20,
+                            height: 20,
                           ),
                         ),
-                  const SizedBox(width: 5)
-                ],
+                      ),
+                      const SizedBox(width: 8),
+                      !displaySend
+                          ? GestureDetector(
+                              onTap: () {
+                                isdisplay = !isdisplay;
+                                if (isdisplay) {
+                                  height = 300;
+                                  scrollController.animateTo(-20,
+                                      curve: Curves.ease,
+                                      duration:
+                                          const Duration(milliseconds: 500));
+                                } else {
+                                  height = 0;
+                                }
+                                setState(() {});
+                              },
+                              child: Container(
+                                width: 36,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                  color: isdisplay
+                                      ? const Color(0xFF12B7F5)
+                                          .withOpacity(0.1)
+                                      : Colors.grey.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Center(
+                                  child: SvgPicture.asset(
+                                    "assets/svg/Add_Plus_Circle.svg",
+                                    color: isdisplay
+                                        ? const Color(0xFF12B7F5)
+                                        : const Color(0xFF1A1A1A),
+                                    width: 20,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : SizedBox(
+                              width: 64,
+                              height: 36,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  if (textEditingController.text.isEmpty)
+                                    return;
+                                  msgs.insert(
+                                      0,
+                                      UserSendUserMsgModel(
+                                          imageurl: me,
+                                          msg:
+                                              textEditingController.text));
+                                  String youtext =
+                                      textEditingController.text;
+                                  textEditingController.clear();
+
+                                  scrollController.animateTo(0,
+                                      curve: Curves.ease,
+                                      duration: const Duration(
+                                          milliseconds: 300));
+                                  Future.delayed(
+                                      const Duration(seconds: 2), () {
+                                    msgs.insert(
+                                        0,
+                                        UserSendUserMsgModel(
+                                            imageurl:
+                                                widget.msgModel.imageurl,
+                                            role: "you",
+                                            msg:
+                                                "${widget.msgModel.name}:$youtext"));
+                                    setState(() {});
+                                  });
+
+                                  setState(() {});
+                                },
+                                style: ButtonStyle(
+                                    padding:
+                                        const MaterialStatePropertyAll(
+                                            EdgeInsets.zero),
+                                    shape: MaterialStatePropertyAll(
+                                      RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                    backgroundColor:
+                                        MaterialStatePropertyAll(
+                                            const Color(0xFF12B7F5))),
+                                child: const Text(
+                                  "发送",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                    ],
+                  ),
+                ),
               ),
             ),
             AnimatedContainer(
                 height: height,
-                color: const Color.fromARGB(255, 247, 247, 247),
-                padding: const EdgeInsets.only(top: 20),
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.fastLinearToSlowEaseIn,
+                color: Colors.white.withOpacity(0.9),
+                padding: const EdgeInsets.only(top: 24),
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeOut,
                 child: StaggeredGrid.count(
-                  crossAxisCount: 3,
-                  mainAxisSpacing: 50,
+                  crossAxisCount: 4,
+                  mainAxisSpacing: 24,
                   crossAxisSpacing: 4,
                   children: [
+                    myDisplayItem(svg: 'picture', name: '相册'),
                     myDisplayItem(svg: 'folder', name: '文件'),
                     myDisplayItem(svg: 'upload 1', name: '微云'),
-                    myDisplayItem(svg: 'picture', name: '相册'),
                     myDisplayItem(svg: 'bookmark', name: '收藏'),
-                    myDisplayItem(svg: 'tethering 1', name: '王卡'),
                     myDisplayItem(svg: 'desktop 1', name: '我的电脑'),
+                    myDisplayItem(svg: 'tethering 1', name: '王卡'),
                     myDisplayItem(svg: 'controller 1', name: '游戏中心'),
-                    myDisplayItem(svg: 'QQ', name: 'QQ')
+                    myDisplayItem(svg: 'QQ', name: 'QQ'),
                   ],
                 ))
           ],
@@ -395,14 +490,17 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
   }
 
   Widget item(UserSendUserMsgModel userMsgModel) {
-    double width = MediaQuery.sizeOf(Get.context!).width * .7;
-    Widget loading = Shimmer.fromColors(
-        baseColor: Colors.white,
-        highlightColor: const Color.fromARGB(255, 240, 240, 240),
+    double width = MediaQuery.sizeOf(Get.context!).width * 0.72;
+    Widget loadingWidget = Shimmer.fromColors(
+        baseColor: const Color(0xFFE8E8E8),
+        highlightColor: Colors.white,
         child: Container(
-          height: 50,
-          width: double.infinity,
-          color: Colors.white,
+          height: 36,
+          width: 36,
+          decoration: BoxDecoration(
+            color: const Color(0xFFE8E8E8),
+            borderRadius: BorderRadius.circular(10),
+          ),
         ));
     return userMsgModel.role == "i"
         ? Row(
@@ -412,13 +510,32 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
               userMsgModel.type == "text"
                   ? Container(
                       constraints: BoxConstraints(maxWidth: width),
-                      padding: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 10),
                       decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.circular(8)),
+                        color: const Color(0xFF12B7F5),
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(18),
+                          topRight: Radius.circular(6),
+                          bottomLeft: Radius.circular(18),
+                          bottomRight: Radius.circular(18),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF12B7F5)
+                                .withOpacity(0.15),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
                       child: Text(
                         userMsgModel.msg,
-                        style: const TextStyle(color: Colors.white),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          height: 1.4,
+                        ),
                       ))
                   : GestureDetector(
                       onTap: () {
@@ -431,17 +548,17 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
                       child: Container(
                         constraints: BoxConstraints(maxWidth: width),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(16),
                           child: ExtendedImage.network(
                             userMsgModel.msg,
                             cache: true,
                             loadStateChanged: (state) {
                               if (state.extendedImageLoadState ==
                                   LoadState.loading) {
-                                return loading;
+                                return loadingWidget;
                               } else if (state.extendedImageLoadState ==
                                   LoadState.failed) {
-                                return loading;
+                                return loadingWidget;
                               }
                               return null;
                             },
@@ -450,55 +567,103 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
                       ),
                     ),
               const SizedBox(width: 10),
-              ClipOval(
-                  child: ExtendedImage.network(
-                userMsgModel.imageurl,
-                cache: true,
-                width: 35,
-                height: 35,
-                fit: BoxFit.cover,
-                loadStateChanged: (state) {
-                  if (state.extendedImageLoadState == LoadState.loading) {
-                    return loading;
-                  } else if (state.extendedImageLoadState == LoadState.failed) {
-                    return loading;
-                  }
-                  return null;
-                },
-              )),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.08),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: ExtendedImage.network(
+                      userMsgModel.imageurl,
+                      cache: true,
+                      width: 38,
+                      height: 38,
+                      fit: BoxFit.cover,
+                      loadStateChanged: (state) {
+                        if (state.extendedImageLoadState ==
+                            LoadState.loading) {
+                          return loadingWidget;
+                        } else if (state.extendedImageLoadState ==
+                            LoadState.failed) {
+                          return loadingWidget;
+                        }
+                        return null;
+                      },
+                    )),
+              ),
             ],
           )
         : Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ClipOval(
-                  child: ExtendedImage.network(
-                userMsgModel.imageurl,
-                cache: true,
-                width: 35,
-                height: 35,
-                fit: BoxFit.cover,
-                loadStateChanged: (state) {
-                  if (state.extendedImageLoadState == LoadState.loading) {
-                    return loading;
-                  } else if (state.extendedImageLoadState == LoadState.failed) {
-                    return loading;
-                  }
-                  return null;
-                },
-              )),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.08),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: ExtendedImage.network(
+                      userMsgModel.imageurl,
+                      cache: true,
+                      width: 38,
+                      height: 38,
+                      fit: BoxFit.cover,
+                      loadStateChanged: (state) {
+                        if (state.extendedImageLoadState ==
+                            LoadState.loading) {
+                          return loadingWidget;
+                        } else if (state.extendedImageLoadState ==
+                            LoadState.failed) {
+                          return loadingWidget;
+                        }
+                        return null;
+                      },
+                    )),
+              ),
               const SizedBox(width: 10),
               userMsgModel.type == "text"
                   ? Container(
                       constraints: BoxConstraints(maxWidth: width),
-                      padding: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 10),
                       decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8)),
+                        color: Colors.white,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(6),
+                          topRight: Radius.circular(18),
+                          bottomLeft: Radius.circular(18),
+                          bottomRight: Radius.circular(18),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.04),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
                       child: Text(
                         userMsgModel.msg,
-                        style: const TextStyle(color: Colors.black),
+                        style: const TextStyle(
+                          color: Color(0xFF1A1A1A),
+                          fontSize: 15,
+                          height: 1.4,
+                        ),
                       ))
                   : GestureDetector(
                       onTap: () {
@@ -511,17 +676,17 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
                       child: Container(
                         constraints: BoxConstraints(maxWidth: width),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(16),
                           child: ExtendedImage.network(
                             userMsgModel.msg,
                             cache: true,
                             loadStateChanged: (state) {
                               if (state.extendedImageLoadState ==
                                   LoadState.loading) {
-                                return loading;
+                                return loadingWidget;
                               } else if (state.extendedImageLoadState ==
                                   LoadState.failed) {
-                                return loading;
+                                return loadingWidget;
                               }
                               return null;
                             },
@@ -537,29 +702,35 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
 Widget myDisplayItem({required String svg, required String name}) {
   return SizedBox(
     child: Column(children: [
-      SvgPicture.asset(
-        "assets/svg/$svg.svg",
-        width: 25,
+      Container(
+        width: 48,
+        height: 48,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Center(
+          child: SvgPicture.asset(
+            "assets/svg/$svg.svg",
+            width: 24,
+            color: const Color(0xFF1A1A1A),
+          ),
+        ),
       ),
-      Text(name, style: const TextStyle(fontWeight: FontWeight.w300))
+      const SizedBox(height: 8),
+      Text(name,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Color(0xFF8A8A8E),
+          ))
     ]),
-  );
-}
-
-Widget getFilterWidget({
-  Widget? child,
-  double sigmaX = 20,
-  double sigmaY = 20,
-}) {
-  return ClipRect(
-    //背景模糊化
-    child: BackdropFilter(
-      filter: ImageFilter.blur(
-        sigmaX: sigmaX,
-        sigmaY: sigmaY,
-      ),
-      child: child,
-    ),
   );
 }
 

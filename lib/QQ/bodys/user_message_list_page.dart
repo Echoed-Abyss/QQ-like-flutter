@@ -104,7 +104,7 @@ class _UserMessageListPageState extends State<UserMessageListPage>
     super.build(context);
     double top = MediaQuery.of(context).padding.top;
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: const Color(0xFFF5F6F8),
       extendBodyBehindAppBar: true,
       appBar: StudyAppBar.MyAppBar(
         "",
@@ -115,7 +115,7 @@ class _UserMessageListPageState extends State<UserMessageListPage>
         leading: const SizedBox(),
       ),
       body: Padding(
-        padding: EdgeInsets.only(top: top + 10, left: 15, right: 15),
+        padding: EdgeInsets.only(top: top + 12, left: 16, right: 16),
         child: Column(
           children: [
             Row(
@@ -125,83 +125,147 @@ class _UserMessageListPageState extends State<UserMessageListPage>
                     Get.to(const UserOptionPage(),
                         transition: Transition.leftToRight);
                   },
-                  child: ClipOval(
-                    child: Image.asset(
-                      "assets/images/bit7.jpg",
-                      alignment: Alignment.topCenter,
-                      fit: BoxFit.cover,
-                      width: 40,
-                      height: 40,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.08),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: ClipOval(
+                      child: Image.asset(
+                        "assets/images/bit7.jpg",
+                        alignment: Alignment.topCenter,
+                        fit: BoxFit.cover,
+                        width: 44,
+                        height: 44,
+                      ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 12),
                 Expanded(
                     child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
                       "7_bit",
-                      style: TextStyle(fontSize: 18),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF1A1A1A),
+                      ),
                     ),
+                    const SizedBox(height: 2),
                     Row(
                       children: [
                         Container(
-                          width: 10,
-                          height: 10,
-                          decoration: BoxDecoration(boxShadow: const [
-                            BoxShadow(color: Color.fromARGB(255, 20, 250, 27)),
-                            BoxShadow(color: Color.fromARGB(255, 40, 248, 47))
-                          ], borderRadius: BorderRadius.circular(5)),
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF22C55E),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF22C55E).withOpacity(0.5),
+                                blurRadius: 4,
+                                spreadRadius: 1,
+                              ),
+                            ],
+                            borderRadius: BorderRadius.circular(4),
+                          ),
                         ),
-                        const SizedBox(width: 5),
+                        const SizedBox(width: 6),
                         const Text(
                           "在线-WIFI",
-                          style: TextStyle(fontSize: 11),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFF8A8A8E),
+                          ),
                         )
                       ],
                     ),
                   ],
                 )),
-                SvgPicture.asset(
-                  "assets/svg/cloud.svg",
-                  color: Colors.black,
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    icon: SvgPicture.asset(
+                      "assets/svg/cloud.svg",
+                      color: const Color(0xFF1A1A1A),
+                      height: 20,
+                    ),
+                    onPressed: () {},
+                  ),
                 ),
                 const SizedBox(width: 10),
-                MyMeun(
-                    context: context,
-                    offsetdy: 60,
-                    offsetWidth: 180,
-                    child: SvgPicture.asset(
-                      "assets/svg/plus-sm.svg",
-                      color: Colors.black,
-                      width: 25,
-                    ),
-                    items: [
-                      BitMeunItem(
-                        icon: SvgPicture.asset("assets/svg/Group 151.svg"),
-                        onTap: () {},
-                        text: '创建DAO',
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
                       ),
-                      BitMeunItem(
-                        icon: SvgPicture.asset("assets/svg/QQ.svg"),
-                        onTap: () {},
-                        text: '创建群聊',
+                    ],
+                  ),
+                  child: MyMeun(
+                      context: context,
+                      offsetdy: 56,
+                      offsetWidth: 180,
+                      child: Center(
+                        child: SvgPicture.asset(
+                          "assets/svg/plus-sm.svg",
+                          color: const Color(0xFF1A1A1A),
+                          width: 20,
+                        ),
                       ),
-                      BitMeunItem(
-                        icon: SvgPicture.asset("assets/svg/User-plus.svg"),
-                        onTap: () {},
-                        text: '添加好友',
-                      ),
-                      BitMeunItem(
-                        icon: SvgPicture.asset("assets/svg/Expand.svg"),
-                        onTap: () {},
-                        text: '扫一扫',
-                      ),
-                    ]),
+                      items: [
+                        BitMeunItem(
+                          icon: SvgPicture.asset("assets/svg/Group 151.svg"),
+                          onTap: () {},
+                          text: '创建DAO',
+                        ),
+                        BitMeunItem(
+                          icon: SvgPicture.asset("assets/svg/QQ.svg"),
+                          onTap: () {},
+                          text: '创建群聊',
+                        ),
+                        BitMeunItem(
+                          icon: SvgPicture.asset("assets/svg/User-plus.svg"),
+                          onTap: () {},
+                          text: '添加好友',
+                        ),
+                        BitMeunItem(
+                          icon: SvgPicture.asset("assets/svg/Expand.svg"),
+                          onTap: () {},
+                          text: '扫一扫',
+                        ),
+                      ]),
+                ),
               ],
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 16),
             Expanded(
                 child: ListView(
               padding: EdgeInsets.zero,
@@ -217,84 +281,163 @@ class _UserMessageListPageState extends State<UserMessageListPage>
                   child: Hero(
                     tag: "Search",
                     child: Container(
-                      height: 35,
+                      height: 44,
                       decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 245, 245, 245),
-                          borderRadius: BorderRadius.circular(5)),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(14),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.04),
+                            blurRadius: 10,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
                       child: const Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.search, color: Colors.grey),
-                          SizedBox(width: 3),
-                          Text("搜索",
-                              style:
-                                  TextStyle(fontSize: 16, color: Colors.grey))
+                          Icon(Icons.search, color: Color(0xFF8A8A8E), size: 20),
+                          SizedBox(width: 6),
+                          Text(
+                            "搜索",
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Color(0xFF8A8A8E),
+                            ),
+                          )
                         ],
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 10),
-                GestureDetector(
-                  onTap: () {
-                    Get.to(const UserDevicePage(),
-                        transition: Transition.rightToLeft);
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(width: 10),
-                      SvgPicture.asset("assets/svg/Monitor.svg",
-                          color: Colors.grey),
-                      const SizedBox(width: 20),
-                      const Expanded(
-                        child: SizedBox(
-                          child: Text(
-                            "已登录 Windows",
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
+                const SizedBox(height: 12),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.03),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
                       ),
-                      SvgPicture.asset("assets/svg/chevronright.svg",
-                          height: 30, color: Colors.grey),
                     ],
                   ),
+                  child: GestureDetector(
+                    onTap: () {
+                      Get.to(const UserDevicePage(),
+                          transition: Transition.rightToLeft);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 14),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 36,
+                            height: 36,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF12B7F5).withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Center(
+                              child: SvgPicture.asset(
+                                "assets/svg/Monitor.svg",
+                                color: const Color(0xFF12B7F5),
+                                height: 20,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          const Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "已登录 Windows",
+                                  style: TextStyle(
+                                    color: Color(0xFF1A1A1A),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500),
+                                ),
+                                SizedBox(height: 2),
+                                Text(
+                                  "ZY-PC",
+                                  style: TextStyle(
+                                    color: Color(0xFF8A8A8E),
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SvgPicture.asset(
+                            "assets/svg/chevronright.svg",
+                            height: 20,
+                            color: const Color(0xFFC7C7CC),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
-                const Divider(
-                  thickness: .2,
-                ),
+                const SizedBox(height: 16),
                 loading
-                    ? ListView.separated(
-                        padding: EdgeInsets.zero,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                              onTap: () {
-                                Get.to(
-                                    MessageDetailsPage(msgModel: data[index]),
-                                    transition: Transition.rightToLeft);
-                              },
-                              child: msgItem1(data[index]));
-                        },
-                        separatorBuilder: (context, index) {
-                          return const SizedBox(height: 15);
-                        },
-                        itemCount: data.length)
+                    ? Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.03),
+                              blurRadius: 10,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: ListView.separated(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                  onTap: () {
+                                    Get.to(
+                                        MessageDetailsPage(
+                                            msgModel: data[index]),
+                                        transition: Transition.rightToLeft);
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10),
+                                    child: msgItem1(data[index]),
+                                  ));
+                            },
+                            separatorBuilder: (context, index) {
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 62),
+                                child: Divider(
+                                  thickness: 0.3,
+                                  color: Colors.grey.withOpacity(0.2),
+                                  height: 1,
+                                ),
+                              );
+                            },
+                            itemCount: data.length),
+                      )
                     : Shimmer.fromColors(
                         baseColor: Colors.white,
                         highlightColor:
                             const Color.fromARGB(255, 240, 240, 240),
                         child: Container(
-                          height: MediaQuery.of(context).size.height,
+                          height: 400,
                           width: double.infinity,
                           decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(8)),
+                              borderRadius: BorderRadius.circular(16)),
                         ))
               ],
             ))
@@ -305,129 +448,79 @@ class _UserMessageListPageState extends State<UserMessageListPage>
   }
 
   Widget msgItem1(MsgModel model) {
-    Widget loading = Shimmer.fromColors(
-        baseColor: Colors.white,
-        highlightColor: const Color.fromARGB(255, 240, 240, 240),
+    Widget loadingWidget = Shimmer.fromColors(
+        baseColor: const Color(0xFFF0F0F0),
+        highlightColor: Colors.white,
         child: Container(
-          height: 50,
-          width: double.infinity,
-          color: Colors.white,
+          height: 52,
+          width: 52,
+          decoration: BoxDecoration(
+            color: const Color(0xFFF0F0F0),
+            borderRadius: BorderRadius.circular(14),
+          ),
         ));
 
-    return Container(
-      color: Colors.transparent,
-      child: Row(
-        children: [
-          ClipOval(
-              child: ExtendedImage.network(
-            model.imageurl,
-            cache: true,
-            width: 50,
-            height: 50,
-            fit: BoxFit.cover,
-            loadStateChanged: (state) {
-              if (state.extendedImageLoadState == LoadState.loading) {
-                return loading;
-              } else if (state.extendedImageLoadState == LoadState.failed) {
-                return loading;
-              }
-              return null;
-            },
-          )),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Text(
-                        model.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w500),
-                      ),
-                      const SizedBox(height: 3),
-                      Text(
-                        model.msg,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style:
-                            const TextStyle(color: Colors.grey, fontSize: 15),
-                      ),
-                    ],
-                  ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      model.time,
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                    const SizedBox(height: 5),
-                    Opacity(
-                      opacity: model.count != null ? 1 : 0,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 2),
-                        constraints:
-                            const BoxConstraints(minWidth: 17, minHeight: 15),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(15)),
-                        child: Text(
-                          model.count ?? "0",
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    )
-                  ],
-                )
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget msgItem() {
     return Row(
       children: [
-        ClipOval(
-            child: Image.asset(
-          "assets/images/dao.jpg",
-          width: 50,
-          height: 50,
-          fit: BoxFit.cover,
-        )),
-        const SizedBox(width: 10),
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.08),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(14),
+            child: ExtendedImage.network(
+              model.imageurl,
+              cache: true,
+              width: 52,
+              height: 52,
+              fit: BoxFit.cover,
+              loadStateChanged: (state) {
+                if (state.extendedImageLoadState == LoadState.loading) {
+                  return loadingWidget;
+                } else if (state.extendedImageLoadState ==
+                    LoadState.failed) {
+                  return loadingWidget;
+                }
+                return null;
+              },
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
         Expanded(
           child: Row(
             children: [
-              const Expanded(
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text(
-                      "造物主动态桌面Ⅰ群",
+                      model.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF1A1A1A),
+                      ),
                     ),
-                    SizedBox(height: 3),
+                    const SizedBox(height: 4),
                     Text(
-                      "八嘎の君：真傻逼啊真傻逼啊真傻逼啊真傻逼啊",
+                      model.msg,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(color: Colors.grey, fontSize: 15),
+                      style: const TextStyle(
+                        color: Color(0xFF8A8A8E),
+                        fontSize: 13,
+                      ),
                     ),
                   ],
                 ),
@@ -436,22 +529,34 @@ class _UserMessageListPageState extends State<UserMessageListPage>
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  const Text(
-                    "下午1:20",
-                    style: TextStyle(color: Colors.grey),
+                  Text(
+                    model.time,
+                    style: const TextStyle(
+                      color: Color(0xFF8A8A8E),
+                      fontSize: 12,
+                    ),
                   ),
-                  const SizedBox(height: 5),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                    constraints:
-                        const BoxConstraints(minWidth: 17, minHeight: 15),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(15)),
-                    child: const Text(
-                      "+99",
-                      style: TextStyle(color: Colors.white),
+                  const SizedBox(height: 6),
+                  Opacity(
+                    opacity: model.count != null ? 1 : 0,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 6, vertical: 2),
+                      constraints:
+                          const BoxConstraints(minWidth: 20, minHeight: 18),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFF3B30),
+                        borderRadius: BorderRadius.circular(9),
+                      ),
+                      child: Text(
+                        model.count ?? "0",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
                   )
                 ],
