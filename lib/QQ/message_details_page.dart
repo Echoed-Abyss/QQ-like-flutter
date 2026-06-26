@@ -269,10 +269,8 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
                   if (mounted) setState(() {});
                 },
                 child: ListView.separated(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                  padding: EdgeInsets.fromLTRB(12, 12, 12, MediaQuery.of(context).padding.bottom + 80),
                   reverse: true,
-                  shrinkWrap: true,
                   controller: scrollController,
                   physics: const AlwaysScrollableScrollPhysics(
                     parent: BouncingScrollPhysics(),

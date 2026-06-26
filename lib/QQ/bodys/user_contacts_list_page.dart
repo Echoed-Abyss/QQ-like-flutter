@@ -39,10 +39,12 @@ class _UserContactsListPageState extends State<UserContactsListPage>
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         leading: const SizedBox(),
       ),
-      body: Padding(
-        padding: EdgeInsets.only(top: top + 12, left: 16, right: 16),
-        child: Column(
-          children: [
+      body: ListView(
+        padding: EdgeInsets.fromLTRB(16, top + 12, 16, 100),
+        physics: const AlwaysScrollableScrollPhysics(
+          parent: BouncingScrollPhysics(),
+        ),
+        children: [
             Row(
               children: [
                 GestureDetector(
@@ -110,14 +112,6 @@ class _UserContactsListPageState extends State<UserContactsListPage>
               ],
             ),
             const SizedBox(height: 16),
-            Expanded(
-                child: ListView(
-              padding: EdgeInsets.zero,
-              shrinkWrap: true,
-              physics: const AlwaysScrollableScrollPhysics(
-                parent: BouncingScrollPhysics(),
-              ),
-              children: [
                 GestureDetector(
                   onTap: () {
                     Get.to(const SearchMessageListPage());
@@ -323,10 +317,7 @@ class _UserContactsListPageState extends State<UserContactsListPage>
                   ),
                 ),
                 const SizedBox(height: 16),
-              ],
-            ))
-          ],
-        ),
+        ],
       ),
     );
   }
