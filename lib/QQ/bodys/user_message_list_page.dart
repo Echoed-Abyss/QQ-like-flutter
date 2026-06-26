@@ -405,6 +405,7 @@ class _UserMessageListPageState extends State<UserMessageListPage>
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(16)),
                   )),
+                ),
         ],
       ),
     );
