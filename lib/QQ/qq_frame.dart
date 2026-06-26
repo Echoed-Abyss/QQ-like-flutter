@@ -24,17 +24,34 @@ class _QQFrameState extends State<QQFrame> with AutomaticKeepAliveClientMixin {
   ];
 
   double _dragStartX = 0;
+  double _dragCurrentX = 0;
   bool _isEdgeSwipe = false;
+  bool _hasTriggered = false;
 
   void _onDragStart(DragStartDetails details) {
     _dragStartX = details.globalPosition.dx;
-    _isEdgeSwipe = _dragStartX < 30;
+    _dragCurrentX = _dragStartX;
+    _isEdgeSwipe = _dragStartX < 60;
+    _hasTriggered = false;
+  }
+
+  void _onDragUpdate(DragUpdateDetails details) {
+    _dragCurrentX = details.globalPosition.dx;
+    double delta = _dragCurrentX - _dragStartX;
+    if (_isEdgeSwipe && !_hasTriggered && delta > 80) {
+      _hasTriggered = true;
+      Get.to(const UserOptionPage(), transition: Transition.leftToRight);
+    }
   }
 
   void _onDragEnd(DragEndDetails details) {
-    if (_isEdgeSwipe && details.primaryVelocity != null && details.primaryVelocity! > 500) {
+    if (_isEdgeSwipe &&
+        !_hasTriggered &&
+        details.primaryVelocity != null &&
+        details.primaryVelocity! > 300) {
       Get.to(const UserOptionPage(), transition: Transition.leftToRight);
     }
+    _hasTriggered = false;
     _isEdgeSwipe = false;
   }
 
@@ -45,6 +62,7 @@ class _QQFrameState extends State<QQFrame> with AutomaticKeepAliveClientMixin {
       extendBody: true,
       body: GestureDetector(
         onHorizontalDragStart: _onDragStart,
+        onHorizontalDragUpdate: _onDragUpdate,
         onHorizontalDragEnd: _onDragEnd,
         behavior: HitTestBehavior.translucent,
         child: IndexedStack(

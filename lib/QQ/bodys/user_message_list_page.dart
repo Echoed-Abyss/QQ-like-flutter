@@ -187,7 +187,32 @@ class _UserMessageListPageState extends State<UserMessageListPage>
                           fontSize: 12,
                           color: Color(0xFF8A8A8E),
                         ),
-                      )
+                      ),
+                      const SizedBox(width: 10),
+                      GestureDetector(
+                        onTap: () {
+                          Get.to(const UserDevicePage(),
+                              transition: Transition.rightToLeft);
+                        },
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SvgPicture.asset(
+                              "assets/svg/Monitor.svg",
+                              color: const Color(0xFF12B7F5),
+                              height: 12,
+                            ),
+                            const SizedBox(width: 3),
+                            const Text(
+                              "Windows",
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: Color(0xFF12B7F5),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -296,73 +321,6 @@ class _UserMessageListPageState extends State<UserMessageListPage>
             child: loading
                 ? Column(
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          Get.to(const UserDevicePage(),
-                              transition: Transition.rightToLeft);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 14),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 36,
-                                height: 36,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF12B7F5)
-                                      .withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Center(
-                                  child: SvgPicture.asset(
-                                    "assets/svg/Monitor.svg",
-                                    color: const Color(0xFF12B7F5),
-                                    height: 20,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              const Expanded(
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "已登录 Windows",
-                                      style: TextStyle(
-                                        color: Color(0xFF1A1A1A),
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500),
-                                    ),
-                                    SizedBox(height: 2),
-                                    Text(
-                                      "ZY-PC",
-                                      style: TextStyle(
-                                        color: Color(0xFF8A8A8E),
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SvgPicture.asset(
-                                "assets/svg/chevronright.svg",
-                                height: 20,
-                                color: const Color(0xFFC7C7CC),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 64),
-                        child: Divider(
-                          thickness: 0.3,
-                          color: Colors.grey.withOpacity(0.2),
-                          height: 1,
-                        ),
-                      ),
                       ...List.generate(data.length, (index) {
                         return Column(
                           children: [

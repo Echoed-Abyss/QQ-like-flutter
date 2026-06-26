@@ -100,6 +100,7 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
   }
 
   late bool isdisplay = false;
+  late bool showEmoji = false;
   late double height = 0;
   late ScrollController scrollController = ScrollController();
   FocusNode focusNode = FocusNode();
@@ -345,33 +346,51 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Container(
-                        width: 36,
-                        height: 36,
-                        decoration: BoxDecoration(
-                          color: Colors.grey.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Center(
-                          child: SvgPicture.asset(
-                            "assets/svg/Star-Struck.svg",
-                            width: 20,
-                            height: 20,
+                      GestureDetector(
+                        onTap: () {
+                          FocusScope.of(context).unfocus();
+                          showEmoji = !showEmoji;
+                          if (showEmoji) {
+                            isdisplay = false;
+                            height = 280;
+                          } else if (!isdisplay) {
+                            height = 0;
+                          }
+                          setState(() {});
+                        },
+                        child: Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: showEmoji
+                                ? const Color(0xFF12B7F5).withOpacity(0.1)
+                                : Colors.grey.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Center(
+                            child: Icon(
+                              Icons.sentiment_satisfied_alt_outlined,
+                              color: showEmoji
+                                  ? const Color(0xFF12B7F5)
+                                  : const Color(0xFF1A1A1A),
+                              size: 22,
+                            ),
                           ),
                         ),
                       ),
                       const SizedBox(width: 8),
                       !displaySend
                           ? GestureDetector(
-                              onTap: () {
+                            onTap: () {
                                 isdisplay = !isdisplay;
                                 if (isdisplay) {
+                                  showEmoji = false;
                                   height = 300;
                                   scrollController.animateTo(-20,
                                       curve: Curves.ease,
                                       duration:
                                           const Duration(milliseconds: 500));
-                                } else {
+                                } else if (!showEmoji) {
                                   height = 0;
                                 }
                                 setState(() {});
@@ -463,30 +482,158 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
             ),
             AnimatedContainer(
                 height: height,
-                color: Colors.white.withOpacity(0.9),
-                padding: const EdgeInsets.only(top: 24),
+                color: Colors.white.withOpacity(0.95),
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeOut,
-                child: StaggeredGrid.count(
-                  crossAxisCount: 4,
-                  mainAxisSpacing: 24,
-                  crossAxisSpacing: 4,
-                  children: [
-                    myDisplayItem(svg: 'picture', name: '相册'),
-                    myDisplayItem(svg: 'folder', name: '文件'),
-                    myDisplayItem(svg: 'upload 1', name: '微云'),
-                    myDisplayItem(svg: 'bookmark', name: '收藏'),
-                    myDisplayItem(svg: 'desktop 1', name: '我的电脑'),
-                    myDisplayItem(svg: 'tethering 1', name: '王卡'),
-                    myDisplayItem(svg: 'controller 1', name: '游戏中心'),
-                    myDisplayItem(svg: 'QQ', name: 'QQ'),
-                  ],
-                ))
+                child: showEmoji
+                    ? _buildEmojiPanel()
+                    : StaggeredGrid.count(
+                        crossAxisCount: 4,
+                        mainAxisSpacing: 24,
+                        crossAxisSpacing: 4,
+                        children: [
+                          myDisplayItem(svg: 'picture', name: '相册'),
+                          myDisplayItem(svg: 'folder', name: '文件'),
+                          myDisplayItem(svg: 'upload 1', name: '微云'),
+                          myDisplayItem(svg: 'bookmark', name: '收藏'),
+                          myDisplayItem(svg: 'desktop 1', name: '我的电脑'),
+                          myDisplayItem(svg: 'tethering 1', name: '王卡'),
+                          myDisplayItem(svg: 'controller 1', name: '游戏中心'),
+                          myDisplayItem(svg: 'QQ', name: 'QQ'),
+                        ],
+                      ))
           ],
         ),
       ),
     );
   }
+
+  Widget _buildEmojiPanel() {
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildEmojiSection("最近使用", _recentEmojis),
+                const SizedBox(height: 20),
+                _buildEmojiSection("超级表情", _superEmojis),
+                const SizedBox(height: 20),
+                _buildEmojiSection("小黄脸表情", _smallEmojis),
+              ],
+            ),
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(
+                color: Colors.grey.withOpacity(0.1),
+                width: 0.5,
+              ),
+            ),
+          ),
+          child: Row(
+            children: [
+              _buildBottomEmojiTab(Icons.search, "", false),
+              const SizedBox(width: 12),
+              _buildBottomEmojiTab(Icons.sentiment_satisfied_alt, "", true),
+              const SizedBox(width: 12),
+              _buildBottomEmojiTab(Icons.auto_awesome, "", false),
+              const SizedBox(width: 12),
+              _buildBottomEmojiTab(Icons.favorite_border, "", false),
+              const SizedBox(width: 12),
+              _buildBottomEmojiTab(Icons.gif, "", false),
+              const SizedBox(width: 12),
+              _buildBottomEmojiTab(Icons.smart_toy_outlined, "", false),
+              const Spacer(),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEmojiSection(String title, List<String> emojis) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF8A8A8E),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: emojis.map((emoji) {
+            return GestureDetector(
+              onTap: () {
+                textEditingController.text += emoji;
+                displaySend = true;
+                setState(() {});
+              },
+              child: SizedBox(
+                width: 40,
+                height: 40,
+                child: Center(
+                  child: Text(
+                    emoji,
+                    style: const TextStyle(fontSize: 32),
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBottomEmojiTab(IconData icon, String label, bool selected) {
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: selected
+            ? const Color(0xFF12B7F5).withOpacity(0.15)
+            : Colors.transparent,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Icon(
+        icon,
+        color: selected
+            ? const Color(0xFF12B7F5)
+            : const Color(0xFF8A8A8E),
+        size: 24,
+      ),
+    );
+  }
+
+  final List<String> _recentEmojis = const [
+    "😍", "🐶", "🐱", "😉", "😊", "😳", "🥰",
+    "🤣", "🥺", "🤢", "🤔", "😆", "🤔", "🍉",
+  ];
+
+  final List<String> _superEmojis = const [
+    "😭", "😊", "😎", "🐶", "🐸", "🥺", "🥰",
+    "🥳", "🍭", "🥺", "🥺",
+  ];
+
+  final List<String> _smallEmojis = const [
+    "😊", "😁", "😂", "🤣", "😃", "😄",
+    "😅", "😆", "😉", "😊", "😋", "😎",
+    "😍", "😘", "🥰", "😗", "😙", "😚",
+    "🙂", "🤗", "🤩", "🤔", "🤨", "😐",
+    "😑", "😶", "🙄", "😏", "😣", "😥",
+  ];
 
   Widget item(UserSendUserMsgModel userMsgModel) {
     double width = MediaQuery.sizeOf(Get.context!).width * 0.72;
