@@ -68,7 +68,7 @@ class PermissionService {
     }
   }
 
-  Future<Map<Permission, PermissionStatus>> requestAllPermissions() async {
+  Future<Map<ph.Permission, ph.PermissionStatus>> requestAllPermissions() async {
     try {
       final permissions = [
         ph.Permission.camera,
