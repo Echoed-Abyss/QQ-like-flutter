@@ -1,23 +1,27 @@
-// ignore_for_file: deprecated_member_use
-
 import 'dart:ui';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_qq/QQ/widget/appbar.dart';
+import 'package:flutter_qq/models/user_model.dart';
+import 'package:flutter_qq/services/api_service.dart';
+import 'package:flutter_qq/states/app_state.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class UserInformationPage extends StatefulWidget {
-  const UserInformationPage({super.key});
+  const UserInformationPage({super.key, this.userId = 0});
+  final int userId;
 
   @override
   State<UserInformationPage> createState() => _UserInformationPageState();
 }
 
 class _UserInformationPageState extends State<UserInformationPage>
-    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+    with TickerProviderStateMixin {
   final double imageheight = 200;
   final ValueNotifier<double> _extraPicHeight = ValueNotifier(0.0);
   double _dy = 0;
@@ -25,11 +29,9 @@ class _UserInformationPageState extends State<UserInformationPage>
   late AnimationController animatedContainer;
   late Animation<double> animation;
 
-  final List<String> imageurl = [];
-  final int count = 1024;
-
-  late Animation<double> countAnimation;
-  late AnimationController countanimatedContainer;
+  UserModel? _user;
+  bool _isLoading = true;
+  bool _isCurrentUser = false;
 
   void _updateHeight(double position) {
     if (_dy == 0) {
@@ -60,27 +62,60 @@ class _UserInformationPageState extends State<UserInformationPage>
     super.initState();
     animatedContainer = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 100));
-    countanimatedContainer = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 100));
     animation = Tween(begin: 0.0, end: 0.0).animate(animatedContainer);
-    List.generate(13, (index) {
-      imageurl.add("assets/images/${index + 1}.png");
-    });
-    countAnimation =
-        Tween(begin: 1.0, end: 1.2).animate(countanimatedContainer);
+    _loadUserInfo();
   }
 
   @override
   void dispose() {
     _extraPicHeight.dispose();
     animatedContainer.dispose();
-    countanimatedContainer.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadUserInfo() async {
+    final appState = Provider.of<AppState>(context, listen: false);
+    final currentUser = appState.currentUser;
+
+    if (widget.userId == 0 ||
+        (currentUser != null && widget.userId == currentUser.id)) {
+      _user = currentUser;
+      _isCurrentUser = true;
+      _isLoading = false;
+      setState(() {});
+      return;
+    }
+
+    try {
+      final response = await ApiService().getUserProfile(widget.userId);
+      if (response.isSuccess && response.data != null) {
+        _user = response.data!;
+        _isCurrentUser = false;
+      }
+    } catch (e) {
+      // Use mock data on error
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  String _getGenderText(int gender) {
+    switch (gender) {
+      case 1:
+        return '男';
+      case 2:
+        return '女';
+      default:
+        return '保密';
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6F8),
       extendBodyBehindAppBar: true,
@@ -158,692 +193,99 @@ class _UserInformationPageState extends State<UserInformationPage>
           builder: (context, height, child) {
             return Stack(
               children: [
-                GestureDetector(
-                  onTap: () {
-                    showDialog(
-                        builder: (BuildContext context) {
-                          return const DetailPage("assets/images/dao.jpg");
-                        },
-                        context: context);
-                  },
-                  child: RepaintBoundary(
-                    child: ExtendedImage.asset(
-                      "assets/images/dao.jpg",
-                      height: imageheight + height,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  loadStateChanged: (state) {
-                    if (state.extendedImageLoadState == LoadState.loading) {
-                      return Shimmer.fromColors(
-                          baseColor: const Color.fromARGB(255, 240, 240, 240),
-                          highlightColor: Colors.white,
-                          child: Container(
-                            height: imageheight,
-                            width: double.infinity,
-                            color: Colors.white,
-                          ));
-                    } else if (state.extendedImageLoadState ==
-                        LoadState.failed) {
-                      return Shimmer.fromColors(
-                          baseColor: const Color.fromARGB(255, 240, 240, 240),
-                          highlightColor: Colors.white,
-                          child: Container(
-                            height: imageheight,
-                            width: double.infinity,
-                            color: Colors.white,
-                          ));
-                    }
-                    return null;
-                  },
-                    ),
-                  ),
-                ),
+                _buildBanner(),
                 ListView(
                   padding: EdgeInsets.zero,
                   children: [
                     SizedBox(
                       height: imageheight - 30 + height,
                     ),
-                Container(
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFF5F6F8),
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(24),
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      Column(
+                    Container(
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFF5F6F8),
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(24),
+                        ),
+                      ),
+                      child: Column(
                         children: [
-                          const SizedBox(height: 16),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.03),
-                                    blurRadius: 12,
-                                    offset: const Offset(0, 4),
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(20),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            GestureDetector(
-                                              onTap: () {
-                                                showDialog(
-                                                    builder:
-                                                        (BuildContext context) {
-                                                      return const DetailPage(
-                                                          "assets/images/bit7.jpg");
-                                                    },
-                                                    context: context);
-                                              },
-                                              child: Hero(
-                                                tag: "assets/images/bit7.jpg",
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.black
-                                                            .withOpacity(0.1),
-                                                        blurRadius: 10,
-                                                        offset:
-                                                            const Offset(0, 4),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  child: ClipOval(
-                                                    child: Image.asset(
-                                                      "assets/images/bit7.jpg",
-                                                      alignment:
-                                                          Alignment.topCenter,
-                                                      fit: BoxFit.cover,
-                                                      width: 72,
-                                                      height: 72,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(width: 14),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Shimmer.fromColors(
-                                                  baseColor:
-                                                      const Color(0xFF1A1A1A),
-                                                  highlightColor:
-                                                      const Color(0xFFFF3B30),
-                                                  child: const Text(
-                                                    "7_bit",
-                                                    style: TextStyle(
-                                                      fontSize: 19,
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                      color: Color(0xFF1A1A1A),
-                                                    ),
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 4),
-                                                const Text.rich(
-                                                  TextSpan(children: [
-                                                    TextSpan(
-                                                      text: "QQ号：210014468",
-                                                      style: TextStyle(
-                                                          color:
-                                                              Color(0xFF8A8A8E)),
-                                                    ),
-                                                    TextSpan(
-                                                        text: " (ID：BitSeven)",
-                                                        style: TextStyle(
-                                                            color: Color(
-                                                                0xFF8A8A8E))),
-                                                  ]),
-                                                  style: TextStyle(fontSize: 12),
-                                                )
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            GestureDetector(
-                                              onTap: () {
-                                                countanimatedContainer.repeat(
-                                                    reverse: true);
-                                              },
-                                              child: ScaleTransition(
-                                                scale: countAnimation,
-                                                child: Container(
-                                                  width: 36,
-                                                  height: 36,
-                                                  decoration: BoxDecoration(
-                                                    color: const Color(0xFFFF3B30)
-                                                        .withOpacity(0.1),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                  ),
-                                                  child: Center(
-                                                    child: SvgPicture.asset(
-                                                      "assets/svg/favorite.svg",
-                                                      width: 20,
-                                                      color: const Color(
-                                                          0xFFFF3B30),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(height: 6),
-                                            Text(
-                                              "$count",
-                                              style: const TextStyle(
-                                                fontSize: 12,
-                                                color: Color(0xFF8A8A8E),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
-                                    child: Divider(
-                                      thickness: 0.3,
-                                      height: 1,
-                                      color: Colors.grey.withOpacity(0.2),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 52,
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 20),
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            width: 28,
-                                            height: 28,
-                                            decoration: BoxDecoration(
-                                              color: const Color(0xFF007AFF)
-                                                  .withOpacity(0.1),
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            child: const Icon(
-                                              Icons.male,
-                                              color: Color(0xFF007AFF),
-                                              size: 16,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 10),
-                                          const Expanded(
-                                            child: Text.rich(
-                                              TextSpan(children: [
-                                                TextSpan(
-                                                    text: "男",
-                                                    style: TextStyle(
-                                                        color:
-                                                            Color(0xFF1A1A1A))),
-                                                TextSpan(
-                                                    text: " | ",
-                                                    style: TextStyle(
-                                                        color:
-                                                            Color(0xFFC7C7CC))),
-                                                TextSpan(
-                                                    text: "1024岁",
-                                                    style: TextStyle(
-                                                        color:
-                                                            Color(0xFF1A1A1A))),
-                                                TextSpan(
-                                                    text: " | ",
-                                                    style: TextStyle(
-                                                        color:
-                                                            Color(0xFFC7C7CC))),
-                                                TextSpan(
-                                                    text: "巨蟹座",
-                                                    style: TextStyle(
-                                                        color:
-                                                            Color(0xFF1A1A1A))),
-                                                TextSpan(
-                                                    text: " | ",
-                                                    style: TextStyle(
-                                                        color:
-                                                            Color(0xFFC7C7CC))),
-                                                TextSpan(
-                                                    text: "来自中国",
-                                                    style: TextStyle(
-                                                        color:
-                                                            Color(0xFF1A1A1A))),
-                                                TextSpan(
-                                                    text: " | ",
-                                                    style: TextStyle(
-                                                        color:
-                                                            Color(0xFFC7C7CC))),
-                                                TextSpan(
-                                                    text: "IT",
-                                                    style: TextStyle(
-                                                        color:
-                                                            Color(0xFF1A1A1A))),
-                                              ]),
-                                              style: TextStyle(fontSize: 14),
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
-                                            ),
-                                          ),
-                                          SvgPicture.asset(
-                                            "assets/svg/chevronright.svg",
-                                            height: 18,
-                                            color: const Color(0xFFC7C7CC),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
-                                    child: Divider(
-                                      thickness: 0.3,
-                                      height: 1,
-                                      color: Colors.grey.withOpacity(0.2),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 52,
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 20),
-                                      child: Row(
-                                        children: [
-                                          const Expanded(
-                                            child: Text(
-                                              "sex robot",
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                color: Color(0xFF1A1A1A),
-                                              ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                          SvgPicture.asset(
-                                            "assets/svg/edit.svg",
-                                            height: 14,
-                                            color: const Color(0xFFC7C7CC),
-                                          ),
-                                          const SizedBox(width: 4),
-                                          SvgPicture.asset(
-                                            "assets/svg/chevronright.svg",
-                                            height: 18,
-                                            color: const Color(0xFFC7C7CC),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                ],
-                              ),
-                            ),
-                          ),
+                          _buildUserInfoCard(),
                           const SizedBox(height: 12),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.02),
-                                    blurRadius: 8,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
-                              height: 52,
-                              child: Row(
-                                children: [
-                                  Flexible(
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          width: 28,
-                                          height: 28,
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xFFFF9500)
-                                                .withOpacity(0.1),
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                          child: Center(
-                                            child: SvgPicture.asset(
-                                              "assets/svg/document 1.svg",
-                                              width: 16,
-                                              color:
-                                                  const Color(0xFFFF9500),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        const Expanded(
-                                          child: Text(
-                                            "资料完成度80%",
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              color: Color(0xFF1A1A1A),
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Text(
-                                        "去完善",
-                                        style: TextStyle(
-                                          color: Color(0xFF12B7F5),
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                      SvgPicture.asset(
-                                        "assets/svg/chevronright.svg",
-                                        height: 18,
-                                        color: const Color(0xFFC7C7CC),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
+                          _buildSignatureCard(),
                           const SizedBox(height: 12),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.02),
-                                    blurRadius: 8,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 16),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Row(
-                                          children: [
-                                            Container(
-                                              width: 28,
-                                              height: 28,
-                                              decoration: BoxDecoration(
-                                                color: const Color(0xFFFFCC00)
-                                                    .withOpacity(0.15),
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                              child: Center(
-                                                child: SvgPicture.asset(
-                                                  "assets/svg/Star.svg",
-                                                  width: 16,
-                                                  color:
-                                                      const Color(0xFFFFB800),
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(width: 10),
-                                            const Expanded(
-                                              child: Text(
-                                                "QQ空间",
-                                                style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Color(0xFF1A1A1A),
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 1,
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          const Text(
-                                            "分享新鲜事",
-                                            style: TextStyle(
-                                              color: Color(0xFF12B7F5),
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                          SvgPicture.asset(
-                                            "assets/svg/chevronright.svg",
-                                            height: 18,
-                                            color: const Color(0xFFC7C7CC),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                  const SizedBox(height: 14),
-                                  SizedBox(
-                                    height: 100,
-                                    width: double.infinity,
-                                    child: ListView.separated(
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.horizontal,
-                                      itemBuilder: (c, i) {
-                                        return GestureDetector(
-                                          onTap: () {
-                                            showDialog(
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return DetailPage(
-                                                      imageurl[i]);
-                                                },
-                                                context: context);
-                                          },
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                            child: ExtendedImage.asset(
-                                              imageurl[i],
-                                              height: 100,
-                                              width: 100,
-                                              fit: BoxFit.cover,
-                                              loadStateChanged: (state) {
-                                                if (state
-                                                        .extendedImageLoadState ==
-                                                    LoadState.loading) {
-                                                  return Container(
-                                                      color: Colors.white,
-                                                      height: 100,
-                                                      width: 100);
-                                                } else if (state
-                                                        .extendedImageLoadState ==
-                                                    LoadState.failed) {
-                                                  return Container(
-                                                      color: Colors.white,
-                                                      height: 100,
-                                                      width: 100);
-                                                }
-                                                return null;
-                                              },
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                      itemCount: imageurl.length,
-                                      separatorBuilder:
-                                          (BuildContext context, int index) {
-                                        return const SizedBox(
-                                          width: 8,
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Row(
-                                          children: [
-                                            Container(
-                                              width: 28,
-                                              height: 28,
-                                              decoration: BoxDecoration(
-                                                color: const Color(0xFF5856D6)
-                                                    .withOpacity(0.1),
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                              child: Center(
-                                                child: SvgPicture.asset(
-                                                  "assets/svg/More_Grid_Big.svg",
-                                                  width: 16,
-                                                  color:
-                                                      const Color(0xFF5856D6),
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(width: 10),
-                                            const Expanded(
-                                              child: Text(
-                                                "精选照片",
-                                                style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Color(0xFF1A1A1A),
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 1,
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          const Text(
-                                            "添加精美照片、展示个性的你",
-                                            style: TextStyle(
-                                              color: Color(0xFF8A8A8E),
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                          SvgPicture.asset(
-                                            "assets/svg/chevronright.svg",
-                                            height: 18,
-                                            color: const Color(0xFFC7C7CC),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 100),
-                                  const SizedBox(height: 30),
-                                ],
-                              ),
-                            ),
-                          ),
+                          _buildDataCard(),
+                          const SizedBox(height: 100),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.9),
-                        border: Border(
-                          top: BorderSide(
-                            color: Colors.grey.withOpacity(0.1),
-                            width: 0.5,
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ClipRRect(
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(24)),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.9),
+                            border: Border(
+                              top: BorderSide(
+                                color: Colors.grey.withOpacity(0.1),
+                                width: 0.5,
+                              ),
+                            ),
+                          ),
+                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+                          child: Row(
+                            children: [
+                              if (_isCurrentUser) ...[
+                                Expanded(
+                                  child: _buildActionButton(
+                                    '个性名片',
+                                    const Color(0xFF8A8A8E),
+                                    Colors.white,
+                                    borderColor: const Color(0xFFE5E5EA),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: _buildActionButton(
+                                    '编辑资料',
+                                    const Color(0xFF8A8A8E),
+                                    Colors.white,
+                                    borderColor: const Color(0xFFE5E5EA),
+                                  ),
+                                ),
+                              ] else ...[
+                                Expanded(
+                                  child: _buildActionButton(
+                                    '加好友',
+                                    const Color(0xFF8A8A8E),
+                                    Colors.white,
+                                    borderColor: const Color(0xFFE5E5EA),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: _buildActionButton(
+                                    '发消息',
+                                    Colors.white,
+                                    const Color(0xFF12B7F5),
+                                    hasShadow: true,
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
                         ),
                       ),
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: _buildActionButton(
-                              '个性名片',
-                              const Color(0xFF8A8A8E),
-                              Colors.white,
-                              borderColor: const Color(0xFFE5E5EA),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: _buildActionButton(
-                              '编辑资料',
-                              const Color(0xFF8A8A8E),
-                              Colors.white,
-                              borderColor: const Color(0xFFE5E5EA),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: _buildActionButton(
-                              '发消息',
-                              Colors.white,
-                              const Color(0xFF12B7F5),
-                              hasShadow: true,
-                            ),
-                          ),
-                        ],
-                      ),
                     ),
-                  ),
+                  ],
                 ),
               ],
-            ),
-          ],
             );
           },
         ),
@@ -851,8 +293,543 @@ class _UserInformationPageState extends State<UserInformationPage>
     );
   }
 
-  @override
-  bool get wantKeepAlive => true;
+  Widget _buildBanner() {
+    final bannerUrl = _user?.banner;
+    return GestureDetector(
+      onTap: () {
+        if (bannerUrl != null && bannerUrl.isNotEmpty) {
+          _showImageDialog(bannerUrl, isNetwork: true);
+        }
+      },
+      child: RepaintBoundary(
+        child: bannerUrl != null && bannerUrl.isNotEmpty
+            ? ExtendedImage.network(
+                bannerUrl,
+                height: imageheight + _extraPicHeight.value,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                loadStateChanged: (state) {
+                  if (state.extendedImageLoadState == LoadState.loading) {
+                    return Shimmer.fromColors(
+                        baseColor: const Color.fromARGB(255, 240, 240, 240),
+                        highlightColor: Colors.white,
+                        child: Container(
+                          height: imageheight,
+                          width: double.infinity,
+                          color: Colors.white,
+                        ));
+                  } else if (state.extendedImageLoadState ==
+                      LoadState.failed) {
+                    return Image.asset(
+                      "assets/images/dao.jpg",
+                      height: imageheight + _extraPicHeight.value,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    );
+                  }
+                  return null;
+                },
+              )
+            : Image.asset(
+                "assets/images/dao.jpg",
+                height: imageheight + _extraPicHeight.value,
+                fit: BoxFit.cover,
+                width: double.infinity,
+              ),
+      ),
+    );
+  }
+
+  Widget _buildUserInfoCard() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.03),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      _buildAvatar(),
+                      const SizedBox(width: 14),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildNickname(),
+                          const SizedBox(height: 4),
+                          _buildQQNumber(),
+                          const SizedBox(height: 6),
+                          _buildLevelRow(),
+                        ],
+                      ),
+                    ],
+                  ),
+                  _buildFavoriteButton(),
+                ],
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Divider(
+                thickness: 0.3,
+                height: 1,
+                color: Color(0xFFE5E5EA),
+              ),
+            ),
+            _buildGenderAgeRow(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAvatar() {
+    final avatarUrl = _user?.avatar;
+    return GestureDetector(
+      onTap: () {
+        if (avatarUrl != null && avatarUrl.isNotEmpty) {
+          _showImageDialog(avatarUrl, isNetwork: true);
+        } else {
+          _showImageDialog("assets/images/bit7.jpg", isNetwork: false);
+        }
+      },
+      child: Hero(
+        tag: "user_avatar_${widget.userId}",
+        child: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: ClipOval(
+            child: avatarUrl != null && avatarUrl.isNotEmpty
+                ? ExtendedImage.network(
+                    avatarUrl,
+                    alignment: Alignment.topCenter,
+                    fit: BoxFit.cover,
+                    width: 72,
+                    height: 72,
+                  )
+                : Image.asset(
+                    "assets/images/bit7.jpg",
+                    alignment: Alignment.topCenter,
+                    fit: BoxFit.cover,
+                    width: 72,
+                    height: 72,
+                  ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNickname() {
+    if (_isLoading) {
+      return Shimmer.fromColors(
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.grey[100]!,
+        child: Container(
+          width: 100,
+          height: 22,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(4),
+          ),
+        ),
+      );
+    }
+    return Text(
+      _user?.nickname ?? '用户',
+      style: const TextStyle(
+        fontSize: 19,
+        fontWeight: FontWeight.w700,
+        color: Color(0xFF1A1A1A),
+      ),
+    );
+  }
+
+  Widget _buildQQNumber() {
+    if (_isLoading) {
+      return Shimmer.fromColors(
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.grey[100]!,
+        child: Container(
+          width: 150,
+          height: 14,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(4),
+          ),
+        ),
+      );
+    }
+    return Text.rich(
+      TextSpan(children: [
+        TextSpan(
+          text: "QQ号：${_user?.qqNumber ?? ''}",
+          style: const TextStyle(color: Color(0xFF8A8A8E)),
+        ),
+        TextSpan(
+            text: " (ID：${_user?.username ?? ''})",
+            style: const TextStyle(color: Color(0xFF8A8A8E))),
+      ]),
+      style: const TextStyle(fontSize: 12),
+    );
+  }
+
+  Widget _buildLevelRow() {
+    final level = _user?.level ?? 1;
+    return Row(
+      children: [
+        _buildLevelIcon(level),
+        const SizedBox(width: 8),
+        Text(
+          "Lv.$level",
+          style: const TextStyle(
+            color: Color(0xFFFFB800),
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLevelIcon(int level) {
+    if (level >= 100) {
+      return Image.asset(
+        "assets/images/level/king.png",
+        height: 16,
+      );
+    } else if (level >= 64) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset("assets/images/level/sun.png", height: 16),
+          const SizedBox(width: 2),
+          Image.asset("assets/images/level/sun.png", height: 16),
+          const SizedBox(width: 2),
+          Image.asset("assets/images/level/moon.png", height: 16),
+        ],
+      );
+    } else if (level >= 32) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset("assets/images/level/sun.png", height: 16),
+          const SizedBox(width: 2),
+          Image.asset("assets/images/level/moon.png", height: 16),
+          const SizedBox(width: 2),
+          Image.asset("assets/images/level/star.png", height: 16),
+        ],
+      );
+    } else if (level >= 16) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset("assets/images/level/moon.png", height: 16),
+          const SizedBox(width: 2),
+          Image.asset("assets/images/level/star.png", height: 16),
+          const SizedBox(width: 2),
+          Image.asset("assets/images/level/star.png", height: 16),
+        ],
+      );
+    } else {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset("assets/images/level/star.png", height: 16),
+          const SizedBox(width: 2),
+          Image.asset("assets/images/level/star.png", height: 16),
+          const SizedBox(width: 2),
+          Image.asset("assets/images/level/star_0.png", height: 16),
+        ],
+      );
+    }
+  }
+
+  Widget _buildFavoriteButton() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        GestureDetector(
+          onTap: () {},
+          child: Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: const Color(0xFFFF3B30).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Center(
+              child: SvgPicture.asset(
+                "assets/svg/favorite.svg",
+                width: 20,
+                color: const Color(0xFFFF3B30),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 6),
+        const Text(
+          "1024",
+          style: TextStyle(
+            fontSize: 12,
+            color: Color(0xFF8A8A8E),
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _buildGenderAgeRow() {
+    return SizedBox(
+      height: 52,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Row(
+          children: [
+            Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                color: const Color(0xFF007AFF).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.person_outline,
+                color: Color(0xFF007AFF),
+                size: 16,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text.rich(
+                TextSpan(children: [
+                  TextSpan(
+                      text: _getGenderText(_user?.gender ?? 0),
+                      style: const TextStyle(color: Color(0xFF1A1A1A))),
+                  const TextSpan(
+                      text: " | ",
+                      style: TextStyle(color: Color(0xFFC7C7CC))),
+                  TextSpan(
+                      text: "${_user?.age ?? 0}岁",
+                      style: const TextStyle(color: Color(0xFF1A1A1A))),
+                  const TextSpan(
+                      text: " | ",
+                      style: TextStyle(color: Color(0xFFC7C7CC))),
+                  TextSpan(
+                      text: _user?.constellation ?? '未知',
+                      style: const TextStyle(color: Color(0xFF1A1A1A))),
+                  const TextSpan(
+                      text: " | ",
+                      style: TextStyle(color: Color(0xFFC7C7CC))),
+                  TextSpan(
+                      text: _user?.location ?? '未知',
+                      style: const TextStyle(color: Color(0xFF1A1A1A))),
+                  const TextSpan(
+                      text: " | ",
+                      style: TextStyle(color: Color(0xFFC7C7CC))),
+                  TextSpan(
+                      text: _user?.occupation ?? '未知',
+                      style: const TextStyle(color: Color(0xFF1A1A1A))),
+                ]),
+                style: const TextStyle(fontSize: 14),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ),
+            SvgPicture.asset(
+              "assets/svg/chevronright.svg",
+              height: 18,
+              color: const Color(0xFFC7C7CC),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSignatureCard() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.02),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        child: Row(
+          children: [
+            Flexible(
+              child: Row(
+                children: [
+                  Container(
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFF9500).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: SvgPicture.asset(
+                        "assets/svg/document 1.svg",
+                        width: 16,
+                        color: const Color(0xFFFF9500),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      _user?.signature ?? '这个人很懒，什么都没留下',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF1A1A1A),
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                  )
+                ],
+              ),
+            ),
+            if (_isCurrentUser)
+              Row(
+                children: [
+                  const Text(
+                    "去完善",
+                    style: TextStyle(
+                      color: Color(0xFF12B7F5),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SvgPicture.asset(
+                    "assets/svg/chevronright.svg",
+                    height: 18,
+                    color: const Color(0xFFC7C7CC),
+                  ),
+                ],
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDataCard() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.02),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        child: Column(
+          children: [
+            _buildDataItem(
+                "assets/svg/Star.svg", "QQ空间", "分享新鲜事", const Color(0xFFFFB800)),
+            const SizedBox(height: 14),
+            _buildDataItem("assets/svg/More_Grid_Big.svg", "精选照片",
+                "添加精美照片、展示个性的你", const Color(0xFF5856D6)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDataItem(
+      String icon, String title, String subtitle, Color color) {
+    return Row(
+      children: [
+        Expanded(
+          child: Row(
+            children: [
+              Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Center(
+                  child: SvgPicture.asset(
+                    icon,
+                    width: 16,
+                    color: color,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF1A1A1A),
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+              )
+            ],
+          ),
+        ),
+        Row(
+          children: [
+            Text(
+              subtitle,
+              style: const TextStyle(
+                color: Color(0xFF8A8A8E),
+                fontSize: 12,
+              ),
+            ),
+            SvgPicture.asset(
+              "assets/svg/chevronright.svg",
+              height: 18,
+              color: const Color(0xFFC7C7CC),
+            ),
+          ],
+        )
+      ],
+    );
+  }
 
   Widget _buildActionButton(String text, Color textColor, Color bgColor,
       {Color? borderColor, bool hasShadow = false}) {
@@ -886,75 +863,27 @@ class _UserInformationPageState extends State<UserInformationPage>
       ),
     );
   }
-}
 
-class DetailPage extends StatefulWidget {
-  const DetailPage(this.url, {super.key});
-  final String url;
-  @override
-  State<DetailPage> createState() => _NewDetailPageState();
-}
-
-class _NewDetailPageState extends State<DetailPage>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return GestureDetector(
-      onTap: () {
-        Navigator.pop(context);
-      },
-      child: ExtendedImageSlidePage(
-        slideAxis: SlideAxis.both,
-        slideType: SlideType.onlyImage,
-        slidePageBackgroundHandler: (offset, pageSize) {
-          return Colors.transparent;
-        },
-        resetPageDuration: const Duration(milliseconds: 200),
-        child: ExtendedImageGesturePageView(
-          children: [
-            ExtendedImage.asset(
-              widget.url,
-              fit: BoxFit.contain,
-              enableSlideOutPage: true,
-              heroBuilderForSlidingPage: (image) => Hero(
-                tag: widget.url,
-                flightShuttleBuilder: (
-                  flightContext,
-                  animation,
-                  flightDirection,
-                  fromHeroContext,
-                  toHeroContext,
-                ) {
-                  final hero = (flightDirection == HeroFlightDirection.pop
-                      ? fromHeroContext.widget
-                      : toHeroContext.widget) as Hero;
-                  return hero.child;
-                },
-                child: image,
-              ),
-              mode: ExtendedImageMode.gesture,
-              initGestureConfigHandler: (s) {
-                return GestureConfig(
-                    minScale: 0.9,
-                    animationMinScale: 0.7,
-                    maxScale: 5.0,
-                    animationMaxScale: 5.5,
-                    speed: 1.0,
-                    inertialSpeed: 100.0,
-                    initialScale: 1.0,
-                    inPageView: false);
-              },
-              loadStateChanged: (state) {
-                return null;
-              },
+  void _showImageDialog(String url, {bool isNetwork = false}) {
+    showDialog(
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: EdgeInsets.zero,
+          child: GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: Center(
+              child: isNetwork
+                  ? ExtendedImage.network(
+                      url,
+                      fit: BoxFit.contain,
+                    )
+                  : Image.asset(url),
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
+      context: context,
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

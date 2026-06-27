@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,8 +8,11 @@ import 'package:flutter_qq/QQ/user_device_page.dart';
 import 'package:flutter_qq/QQ/user_option_page.dart';
 import 'package:flutter_qq/QQ/widget/appbar.dart';
 import 'package:flutter_qq/QQ/widget/bitmeun.dart';
+import 'package:flutter_qq/models/user_model.dart';
+import 'package:flutter_qq/states/app_state.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class UserMessageListPage extends StatefulWidget {
@@ -25,6 +26,7 @@ class _UserMessageListPageState extends State<UserMessageListPage>
     with AutomaticKeepAliveClientMixin {
   late List<MsgModel> data = [];
   late bool loading = false;
+
   @override
   void initState() {
     super.initState();
@@ -99,314 +101,498 @@ class _UserMessageListPageState extends State<UserMessageListPage>
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    double top = MediaQuery.of(context).padding.top;
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F6F8),
-      extendBodyBehindAppBar: true,
-      appBar: StudyAppBar.MyAppBar(
-        "",
-        context,
-        toolbarHeight: 0,
-        backgroundColor: Colors.transparent,
-        systemOverlayStyle: SystemUiOverlayStyle.dark,
-        leading: const SizedBox(),
-      ),
-      body: ListView(
-        padding: EdgeInsets.fromLTRB(16, top + 12, 16, 100),
-        physics: const AlwaysScrollableScrollPhysics(
-          parent: BouncingScrollPhysics(),
-        ),
-        children: [
-          Row(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Get.to(const UserOptionPage(),
-                      transition: Transition.leftToRight);
-                },
-                child: Container(
+  void _showStatusMenu() {
+    final appState = Provider.of<AppState>(context, listen: false);
+    final currentStatus = appState.currentUser?.onlineStatus ?? onlineStatusOnline;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: SafeArea(
+            top: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 8),
+                Container(
+                  width: 36,
+                  height: 4,
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
+                    color: Colors.grey.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    children: [
+                      Text(
+                        "我的状态",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF1A1A1A),
+                        ),
                       ),
                     ],
                   ),
-                  child: ClipOval(
-                    child: Image.asset(
-                      "assets/images/bit7.jpg",
-                      alignment: Alignment.topCenter,
-                      fit: BoxFit.cover,
-                      width: 44,
-                      height: 44,
-                    ),
-                  ),
                 ),
+                const SizedBox(height: 12),
+                _buildStatusItem(onlineStatusOnline, "在线", "我在线上",
+                    Icons.circle, const Color(0xFF22C55E), currentStatus),
+                _buildStatusItem(onlineStatusAway, "离开", "暂时不在",
+                    Icons.schedule, const Color(0xFFFF9500), currentStatus),
+                _buildStatusItem(onlineStatusBusy, "忙碌", "正在忙",
+                    Icons.work_outline, const Color(0xFFFF3B30), currentStatus),
+                _buildStatusItem(
+                    onlineStatusDoNotDisturb,
+                    "勿扰",
+                    "消息免打扰",
+                    Icons.do_not_disturb_on_outlined,
+                    const Color(0xFF8E8E93),
+                    currentStatus),
+                _buildStatusItem(onlineStatusInvisible, "隐身", "对所有人隐身",
+                    Icons.visibility_off_outlined, const Color(0xFF5856D6), currentStatus),
+                const SizedBox(height: 16),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildStatusItem(int status, String title, String subtitle,
+      IconData icon, Color color, int currentStatus) {
+    final isSelected = status == currentStatus;
+    return GestureDetector(
+      onTap: () async {
+        Navigator.pop(context);
+        final appState = Provider.of<AppState>(context, listen: false);
+        await appState.updateOnlineStatus(status);
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                  child: Column(
+              child: Icon(
+                icon,
+                color: color,
+                size: 22,
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "7_bit",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
                       color: Color(0xFF1A1A1A),
                     ),
                   ),
                   const SizedBox(height: 2),
-                  Row(
-                    children: [
-                      Container(
-                        width: 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF22C55E),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFF22C55E).withOpacity(0.5),
-                              blurRadius: 4,
-                              spreadRadius: 1,
-                            ),
-                          ],
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      const Text(
-                        "在线-WIFI",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF8A8A8E),
-                        ),
-                      )
-                    ],
+                  Text(
+                    subtitle,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: Color(0xFF8A8A8E),
+                    ),
                   ),
                 ],
-              )),
-              Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: MyMeun(
-                    context: context,
-                    offsetdy: 56,
-                    offsetWidth: 180,
-                    child: Center(
-                      child: SvgPicture.asset(
-                        "assets/svg/plus-sm.svg",
-                        color: const Color(0xFF1A1A1A),
-                        width: 20,
-                      ),
-                    ),
-                    items: [
-                      BitMeunItem(
-                        icon: SvgPicture.asset("assets/svg/Group 151.svg"),
-                        onTap: () {},
-                        text: '创建DAO',
-                      ),
-                      BitMeunItem(
-                        icon: SvgPicture.asset("assets/svg/QQ.svg"),
-                        onTap: () {},
-                        text: '创建群聊',
-                      ),
-                      BitMeunItem(
-                        icon: SvgPicture.asset("assets/svg/User-plus.svg"),
-                        onTap: () {},
-                        text: '添加好友',
-                      ),
-                      BitMeunItem(
-                        icon: SvgPicture.asset("assets/svg/Expand.svg"),
-                        onTap: () {},
-                        text: '扫一扫',
-                      ),
-                    ]),
               ),
-            ],
+            ),
+            if (isSelected)
+              const Icon(
+                Icons.check_circle,
+                color: Color(0xFF22C55E),
+                size: 22,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Color _getStatusColor(int status) {
+    switch (status) {
+      case onlineStatusOnline:
+        return const Color(0xFF22C55E);
+      case onlineStatusAway:
+        return const Color(0xFFFF9500);
+      case onlineStatusBusy:
+        return const Color(0xFFFF3B30);
+      case onlineStatusDoNotDisturb:
+        return const Color(0xFF8E8E93);
+      case onlineStatusInvisible:
+        return const Color(0xFF5856D6);
+      default:
+        return const Color(0xFF8E8E93);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    double top = MediaQuery.of(context).padding.top;
+
+    return Consumer<AppState>(
+      builder: (context, appState, child) {
+        final user = appState.currentUser;
+        final onlineStatus = user?.onlineStatus ?? onlineStatusOnline;
+        final statusText = getOnlineStatusText(onlineStatus);
+        final statusColor = _getStatusColor(onlineStatus);
+        final devices = appState.devices.where((d) => d.isOnline).toList();
+
+        return Scaffold(
+          backgroundColor: const Color(0xFFF5F6F8),
+          extendBodyBehindAppBar: true,
+          appBar: StudyAppBar.MyAppBar(
+            "",
+            context,
+            toolbarHeight: 0,
+            backgroundColor: Colors.transparent,
+            systemOverlayStyle: SystemUiOverlayStyle.dark,
+            leading: const SizedBox(),
           ),
-          const SizedBox(height: 16),
-          GestureDetector(
-            onTap: () {
-              Get.to(const SearchMessageListPage());
-            },
-            child: Hero(
-              tag: "Search",
-              child: Container(
-                height: 44,
+          body: ListView(
+            padding: EdgeInsets.fromLTRB(16, top + 12, 16, 100),
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
+            ),
+            children: [
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Get.to(const UserOptionPage(),
+                          transition: Transition.leftToRight);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.08),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: ClipOval(
+                        child: user?.avatar != null && user!.avatar.isNotEmpty
+                            ? ExtendedImage.network(
+                                user.avatar,
+                                alignment: Alignment.topCenter,
+                                fit: BoxFit.cover,
+                                width: 44,
+                                height: 44,
+                              )
+                            : Image.asset(
+                                "assets/images/bit7.jpg",
+                                alignment: Alignment.topCenter,
+                                fit: BoxFit.cover,
+                                width: 44,
+                                height: 44,
+                              ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                      child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        user?.nickname ?? "7_bit",
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF1A1A1A),
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      GestureDetector(
+                        onTap: _showStatusMenu,
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color: statusColor,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: statusColor.withOpacity(0.5),
+                                    blurRadius: 4,
+                                    spreadRadius: 1,
+                                  ),
+                                ],
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              "$statusText-WIFI",
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF8A8A8E),
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            const Icon(
+                              Icons.keyboard_arrow_down,
+                              size: 14,
+                              color: Color(0xFF8A8A8E),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )),
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: MyMeun(
+                        context: context,
+                        offsetdy: 56,
+                        offsetWidth: 180,
+                        child: Center(
+                          child: SvgPicture.asset(
+                            "assets/svg/plus-sm.svg",
+                            color: const Color(0xFF1A1A1A),
+                            width: 20,
+                          ),
+                        ),
+                        items: [
+                          BitMeunItem(
+                            icon: SvgPicture.asset("assets/svg/Group 151.svg"),
+                            onTap: () {},
+                            text: '创建DAO',
+                          ),
+                          BitMeunItem(
+                            icon: SvgPicture.asset("assets/svg/QQ.svg"),
+                            onTap: () {},
+                            text: '创建群聊',
+                          ),
+                          BitMeunItem(
+                            icon: SvgPicture.asset("assets/svg/User-plus.svg"),
+                            onTap: () {},
+                            text: '添加好友',
+                          ),
+                          BitMeunItem(
+                            icon: SvgPicture.asset("assets/svg/Expand.svg"),
+                            onTap: () {},
+                            text: '扫一扫',
+                          ),
+                        ]),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              GestureDetector(
+                onTap: () {
+                  Get.to(const SearchMessageListPage());
+                },
+                child: Hero(
+                  tag: "Search",
+                  child: Container(
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(14),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.04),
+                          blurRadius: 10,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.search, color: Color(0xFF8A8A8E), size: 20),
+                        SizedBox(width: 6),
+                        Text(
+                          "搜索",
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Color(0xFF8A8A8E),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
+                      color: Colors.black.withOpacity(0.03),
                       blurRadius: 10,
                       offset: const Offset(0, 2),
                     ),
                   ],
                 ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.search, color: Color(0xFF8A8A8E), size: 20),
-                    SizedBox(width: 6),
-                    Text(
-                      "搜索",
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Color(0xFF8A8A8E),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.03),
-                  blurRadius: 10,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: loading
-                ? Column(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Get.to(const UserDevicePage(),
-                              transition: Transition.rightToLeft);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 14),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 36,
-                                height: 36,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF12B7F5)
-                                      .withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Center(
-                                  child: SvgPicture.asset(
-                                    "assets/svg/Monitor.svg",
-                                    color: const Color(0xFF12B7F5),
-                                    height: 20,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              const Expanded(
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                child: loading
+                    ? Column(
+                        children: [
+                          if (devices.isNotEmpty) ...[
+                            GestureDetector(
+                              onTap: () {
+                                Get.to(const UserDevicePage(),
+                                    transition: Transition.rightToLeft);
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 14),
+                                child: Row(
                                   children: [
-                                    Text(
-                                      "已登录 Windows",
-                                      style: TextStyle(
-                                        color: Color(0xFF1A1A1A),
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500),
-                                    ),
-                                    SizedBox(height: 2),
-                                    Text(
-                                      "ZY-PC",
-                                      style: TextStyle(
-                                        color: Color(0xFF8A8A8E),
-                                        fontSize: 12,
+                                    Container(
+                                      width: 36,
+                                      height: 36,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF12B7F5)
+                                            .withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
+                                      child: Center(
+                                        child: SvgPicture.asset(
+                                          "assets/svg/Monitor.svg",
+                                          color: const Color(0xFF12B7F5),
+                                          height: 20,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "已登录 ${devices.map((d) => getDeviceTypeName(d.deviceType)).join("、")}",
+                                            style: const TextStyle(
+                                                color: Color(0xFF1A1A1A),
+                                                fontSize: 15,
+                                                fontWeight:
+                                                    FontWeight.w500),
+                                          ),
+                                          SizedBox(height: 2),
+                                          Text(
+                                            devices.length > 1
+                                                ? "${devices.length}台设备在线"
+                                                : devices.first.deviceName.isNotEmpty
+                                                    ? devices.first.deviceName
+                                                    : getDeviceTypeName(
+                                                        devices.first.deviceType),
+                                            style: const TextStyle(
+                                              color: Color(0xFF8A8A8E),
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SvgPicture.asset(
+                                      "assets/svg/chevronright.svg",
+                                      height: 20,
+                                      color: const Color(0xFFC7C7CC),
                                     ),
                                   ],
                                 ),
                               ),
-                              SvgPicture.asset(
-                                "assets/svg/chevronright.svg",
-                                height: 20,
-                                color: const Color(0xFFC7C7CC),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 64),
+                              child: Divider(
+                                thickness: 0.3,
+                                color: Colors.grey.withOpacity(0.2),
+                                height: 1,
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 64),
-                        child: Divider(
-                          thickness: 0.3,
-                          color: Colors.grey.withOpacity(0.2),
-                          height: 1,
-                        ),
-                      ),
-                      ...List.generate(data.length, (index) {
-                        return Column(
-                          children: [
-                            GestureDetector(
-                                onTap: () {
-                                  Get.to(
-                                      MessageDetailsPage(
-                                          msgModel: data[index]),
-                                      transition:
-                                          Transition.rightToLeft);
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 10),
-                                  child: msgItem1(data[index]),
-                                )),
-                            if (index != data.length - 1)
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 78),
-                                child: Divider(
-                                  thickness: 0.3,
-                                  color: Colors.grey.withOpacity(0.2),
-                                  height: 1,
-                                ),
-                              ),
+                            ),
                           ],
-                        );
-                      }),
-                    ],
-                  )
-                : Shimmer.fromColors(
-                  baseColor: Colors.white,
-                  highlightColor:
-                      const Color.fromARGB(255, 240, 240, 240),
-                  child: Container(
-                    height: 400,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16)),
-                  )),
-        ],
-      ),
+                          ...List.generate(data.length, (index) {
+                            return Column(
+                              children: [
+                                GestureDetector(
+                                    onTap: () {
+                                      Get.to(
+                                          MessageDetailsPage(
+                                              msgModel: data[index]),
+                                          transition:
+                                              Transition.rightToLeft);
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 10),
+                                      child: msgItem1(data[index]),
+                                    )),
+                                if (index != data.length - 1)
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.only(left: 78),
+                                    child: Divider(
+                                      thickness: 0.3,
+                                      color: Colors.grey.withOpacity(0.2),
+                                      height: 1,
+                                    ),
+                                  ),
+                              ],
+                            );
+                          }),
+                        ],
+                      )
+                    : Shimmer.fromColors(
+                        baseColor: Colors.white,
+                        highlightColor:
+                            const Color.fromARGB(255, 240, 240, 240),
+                        child: Container(
+                          height: 400,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16)),
+                        )),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 

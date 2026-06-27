@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_qq/QQ/login_page.dart';
 import 'package:flutter_qq/QQ/qq_frame.dart';
+import 'package:flutter_qq/states/app_state.dart';
+import 'package:flutter_qq/services/notification_service.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService().init();
   runApp(const MyApp());
 }
 
@@ -12,49 +18,98 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: 'QQ',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF12B7F5),
-          primary: const Color(0xFF12B7F5),
-        ),
-        scaffoldBackgroundColor: const Color(0xFFF5F6F8),
-        iconButtonTheme: const IconButtonThemeData(
-          style: ButtonStyle(
-            overlayColor: MaterialStatePropertyAll(Colors.transparent),
+    return ChangeNotifierProvider(
+      create: (_) => AppState(),
+      child: GetMaterialApp(
+        title: 'QQ',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color(0xFF12B7F5),
+            primary: const Color(0xFF12B7F5),
+          ),
+          scaffoldBackgroundColor: const Color(0xFFF5F6F8),
+          iconButtonTheme: const IconButtonThemeData(
+            style: ButtonStyle(
+              overlayColor: MaterialStatePropertyAll(Colors.transparent),
+            ),
+          ),
+          appBarTheme: const AppBarTheme(
+            elevation: 0,
+            toolbarHeight: 80,
+            surfaceTintColor: Colors.transparent,
+            backgroundColor: Colors.transparent,
+            systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarColor: Colors.transparent,
+              statusBarIconBrightness: Brightness.dark,
+              systemNavigationBarColor: Colors.transparent,
+            ),
+            iconTheme: IconThemeData(color: Color(0xFF212529)),
+          ),
+          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+            elevation: 0,
+            backgroundColor: Colors.white,
+            selectedItemColor: Color(0xFF12B7F5),
+            unselectedItemColor: Color(0xFF8A8A8E),
+            type: BottomNavigationBarType.fixed,
+          ),
+          cardTheme: const CardTheme(
+            elevation: 0,
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(16)),
+            ),
           ),
         ),
-        appBarTheme: const AppBarTheme(
-          elevation: 0,
-          toolbarHeight: 80,
-          surfaceTintColor: Colors.transparent,
-          backgroundColor: Colors.transparent,
-          systemOverlayStyle: SystemUiOverlayStyle(
-            statusBarColor: Colors.transparent,
-            statusBarIconBrightness: Brightness.dark,
-            systemNavigationBarColor: Colors.transparent,
-          ),
-          iconTheme: IconThemeData(color: Color(0xFF212529)),
-        ),
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          elevation: 0,
-          backgroundColor: Colors.white,
-          selectedItemColor: Color(0xFF12B7F5),
-          unselectedItemColor: Color(0xFF8A8A8E),
-          type: BottomNavigationBarType.fixed,
-        ),
-        cardTheme: const CardTheme(
-          elevation: 0,
-          color: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(16)),
-          ),
-        ),
+        home: const AuthWrapper(),
       ),
-      home: const QQFrame(),
+    );
+  }
+}
+
+class AuthWrapper extends StatefulWidget {
+  const AuthWrapper({super.key});
+
+  @override
+  State<AuthWrapper> createState() => _AuthWrapperState();
+}
+
+class _AuthWrapperState extends State<AuthWrapper> {
+  bool _isChecking = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    final appState = Provider.of<AppState>(context, listen: false);
+    await appState.checkLoginStatus();
+    if (mounted) {
+      setState(() {
+        _isChecking = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isChecking) {
+      return const Scaffold(
+        backgroundColor: Color(0xFFF5F6F8),
+        body: Center(
+          child: CircularProgressIndicator(
+            color: Color(0xFF12B7F5),
+          ),
+        ),
+      );
+    }
+    return Consumer<AppState>(
+      builder: (context, appState, child) {
+        return appState.isLoggedIn ? const QQFrame() : const LoginPage();
+      },
     );
   }
 }
