@@ -3,11 +3,11 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ApiConfig {
-  static const String baseUrl = 'http://10.0.2.2:8080';
-  static const String tcpHost = '10.0.2.2';
-  static const int tcpPort = 9090;
-  static const String appSecret = 'qq-like-server-app-secret-2024';
-  static const String apiVersion = '/api/v1';
+  static const String baseUrl = 'https://qqflu.leatiny.icu';
+  static const String tcpHost = 'qqflu.leatiny.icu';
+  static const int tcpPort = 10909;
+  static const String appSecret = 'rPubfToVrhIoSXdxsuybgrbUDZfrYZOhFWXpGsilEHzFlYkDHE';
+  static const String apiVersion = '/api';
 }
 
 class StorageService {
