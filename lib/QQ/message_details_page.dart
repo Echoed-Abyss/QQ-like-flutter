@@ -259,7 +259,7 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
   }
 
   void _showMessageMenu(
-      BuildContext context, MessageModel msg, TapDownDetails details) {
+      BuildContext context, MessageModel msg, LongPressStartDetails details) {
     if (msg.isRecalled) return;
     setState(() {
       longPressMsgId = msg.id;

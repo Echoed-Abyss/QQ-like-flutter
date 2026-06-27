@@ -6,6 +6,7 @@ import 'api_config.dart';
 import 'notification_service.dart';
 import 'permission_service.dart';
 import '../models/user_model.dart';
+import '../states/app_state.dart';
 
 class TcpService {
   static final TcpService _instance = TcpService._internal();

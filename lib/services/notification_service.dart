@@ -45,7 +45,7 @@ class NotificationService {
 
       if (android != null) {
         final result = await android.requestNotificationsPermission();
-        granted = result;
+        granted = result ?? false;
       }
 
       if (ios != null) {
@@ -54,7 +54,7 @@ class NotificationService {
           badge: true,
           sound: true,
         );
-        granted = result;
+        granted = result ?? false;
       }
 
       return granted;

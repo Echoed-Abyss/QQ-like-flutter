@@ -8,7 +8,6 @@ import 'package:flutter_qq/models/user_model.dart';
 import 'package:flutter_qq/services/api_service.dart';
 import 'package:flutter_qq/states/app_state.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
