@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_qq/QQ/login_page.dart';
-import 'package:flutter_qq/QQ/qq_frame.dart';
-import 'package:flutter_qq/states/app_state.dart';
-import 'package:flutter_qq/services/notification_service.dart';
+import 'package:rech/ReCh/login_page.dart';
+import 'package:rech/ReCh/rech_frame.dart';
+import 'package:rech/states/app_state.dart';
+import 'package:rech/services/notification_service.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:provider/provider.dart';
 
@@ -20,52 +20,100 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => AppState(),
-      child: GetMaterialApp(
-        title: 'QQ',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFF12B7F5),
-            primary: const Color(0xFF12B7F5),
-          ),
-          scaffoldBackgroundColor: const Color(0xFFF5F6F8),
-          iconButtonTheme: const IconButtonThemeData(
-            style: ButtonStyle(
-              overlayColor: MaterialStatePropertyAll(Colors.transparent),
-            ),
-          ),
-          appBarTheme: const AppBarTheme(
-            elevation: 0,
-            toolbarHeight: 80,
-            surfaceTintColor: Colors.transparent,
-            backgroundColor: Colors.transparent,
-            systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: Colors.transparent,
-              statusBarIconBrightness: Brightness.dark,
-              systemNavigationBarColor: Colors.transparent,
-            ),
-            iconTheme: IconThemeData(color: Color(0xFF212529)),
-          ),
-          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-            elevation: 0,
-            backgroundColor: Colors.white,
-            selectedItemColor: Color(0xFF12B7F5),
-            unselectedItemColor: Color(0xFF8A8A8E),
-            type: BottomNavigationBarType.fixed,
-          ),
-          cardTheme: const CardTheme(
-            elevation: 0,
-            color: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(16)),
-            ),
-          ),
-        ),
-        home: const AuthWrapper(),
+      child: Consumer<AppState>(
+        builder: (context, appState, child) {
+          return GetMaterialApp(
+            title: 'ReCh',
+            debugShowCheckedModeBanner: false,
+            theme: appState.isDarkMode ? _darkTheme : _lightTheme,
+            home: const AuthWrapper(),
+          );
+        },
       ),
     );
   }
+
+  ThemeData get _lightTheme => ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF12B7F5),
+          primary: const Color(0xFF12B7F5),
+        ),
+        scaffoldBackgroundColor: const Color(0xFFF5F6F8),
+        iconButtonTheme: const IconButtonThemeData(
+          style: ButtonStyle(
+            overlayColor: MaterialStatePropertyAll(Colors.transparent),
+          ),
+        ),
+        appBarTheme: const AppBarTheme(
+          elevation: 0,
+          toolbarHeight: 80,
+          surfaceTintColor: Colors.transparent,
+          backgroundColor: Colors.transparent,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.dark,
+            systemNavigationBarColor: Colors.transparent,
+          ),
+          iconTheme: IconThemeData(color: Color(0xFF212529)),
+        ),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          elevation: 0,
+          backgroundColor: Colors.white,
+          selectedItemColor: Color(0xFF12B7F5),
+          unselectedItemColor: Color(0xFF8A8A8E),
+          type: BottomNavigationBarType.fixed,
+        ),
+        cardTheme: const CardTheme(
+          elevation: 0,
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+          ),
+        ),
+      );
+
+  ThemeData get _darkTheme => ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.dark,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF12B7F5),
+          primary: const Color(0xFF12B7F5),
+          brightness: Brightness.dark,
+        ),
+        scaffoldBackgroundColor: const Color(0xFF1A1A1A),
+        iconButtonTheme: const IconButtonThemeData(
+          style: ButtonStyle(
+            overlayColor: MaterialStatePropertyAll(Colors.transparent),
+          ),
+        ),
+        appBarTheme: const AppBarTheme(
+          elevation: 0,
+          toolbarHeight: 80,
+          surfaceTintColor: Colors.transparent,
+          backgroundColor: Colors.transparent,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.light,
+            systemNavigationBarColor: Colors.transparent,
+          ),
+          iconTheme: IconThemeData(color: Colors.white),
+        ),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          elevation: 0,
+          backgroundColor: Color(0xFF2C2C2E),
+          selectedItemColor: Color(0xFF12B7F5),
+          unselectedItemColor: Color(0xFF8A8A8E),
+          type: BottomNavigationBarType.fixed,
+        ),
+        cardTheme: const CardTheme(
+          elevation: 0,
+          color: Color(0xFF2C2C2E),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+          ),
+        ),
+      );
 }
 
 class AuthWrapper extends StatefulWidget {
@@ -108,7 +156,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
     }
     return Consumer<AppState>(
       builder: (context, appState, child) {
-        return appState.isLoggedIn ? const QQFrame() : const LoginPage();
+        return appState.isLoggedIn ? const ReChFrame() : const LoginPage();
       },
     );
   }

@@ -3,10 +3,10 @@ import 'dart:ui';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_qq/QQ/widget/appbar.dart';
-import 'package:flutter_qq/models/user_model.dart';
-import 'package:flutter_qq/services/api_service.dart';
-import 'package:flutter_qq/states/app_state.dart';
+import 'package:rech/ReCh/widget/appbar.dart';
+import 'package:rech/models/user_model.dart';
+import 'package:rech/services/api_service.dart';
+import 'package:rech/states/app_state.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -141,7 +141,82 @@ class _UserInformationPageState extends State<UserInformationPage>
           actions: [
             IconButton(
               padding: EdgeInsets.zero,
-              onPressed: () {},
+              onPressed: () async {
+                final response = await ApiService().getUserQRCode();
+                if (response.isSuccess && response.data != null) {
+                  final qrData = response.data!['qr_code']?.toString() ?? '';
+                  if (context.mounted) {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                        title: const Text('我的二维码', textAlign: TextAlign.center),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (qrData.isNotEmpty && qrData.startsWith('http'))
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image.network(
+                                  qrData,
+                                  width: 200,
+                                  height: 200,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      width: 200,
+                                      height: 200,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFF5F6F8),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: const Icon(
+                                        Icons.qr_code,
+                                        size: 80,
+                                        color: Color(0xFF12B7F5),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              )
+                            else
+                              Container(
+                                width: 200,
+                                height: 200,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFF5F6F8),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: const Icon(
+                                  Icons.qr_code,
+                                  size: 80,
+                                  color: Color(0xFF12B7F5),
+                                ),
+                              ),
+                            const SizedBox(height: 16),
+                            Text(
+                              _user?.nickname ?? '',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text(
+                              '关闭',
+                              style: TextStyle(color: Color(0xFF12B7F5)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                }
+              },
               icon: Container(
                 width: 36,
                 height: 36,
@@ -370,7 +445,7 @@ class _UserInformationPageState extends State<UserInformationPage>
                         children: [
                           _buildNickname(),
                           const SizedBox(height: 4),
-                          _buildQQNumber(),
+                          _buildReChNumber(),
                           const SizedBox(height: 6),
                           _buildLevelRow(),
                         ],
@@ -466,7 +541,7 @@ class _UserInformationPageState extends State<UserInformationPage>
     );
   }
 
-  Widget _buildQQNumber() {
+  Widget _buildReChNumber() {
     if (_isLoading) {
       return Shimmer.fromColors(
         baseColor: Colors.grey[300]!,
@@ -484,7 +559,7 @@ class _UserInformationPageState extends State<UserInformationPage>
     return Text.rich(
       TextSpan(children: [
         TextSpan(
-          text: "QQ号：${_user?.qqNumber ?? ''}",
+          text: "ReCh号：${_user?.rechNumber ?? ''}",
           style: const TextStyle(color: Color(0xFF8A8A8E)),
         ),
         TextSpan(
@@ -504,7 +579,7 @@ class _UserInformationPageState extends State<UserInformationPage>
         Text(
           "Lv.$level",
           style: const TextStyle(
-            color: Color(0xFFFFB800),
+            color: Color(0xFFFF9500),
             fontSize: 12,
             fontWeight: FontWeight.w600,
           ),
@@ -762,7 +837,7 @@ class _UserInformationPageState extends State<UserInformationPage>
         child: Column(
           children: [
             _buildDataItem(
-                "assets/svg/Star.svg", "QQ空间", "分享新鲜事", const Color(0xFFFFB800)),
+                "assets/svg/Star.svg", "ReCh空间", "分享新鲜事", const Color(0xFFFFB800)),
             const SizedBox(height: 14),
             _buildDataItem("assets/svg/More_Grid_Big.svg", "精选照片",
                 "添加精美照片、展示个性的你", const Color(0xFF5856D6)),

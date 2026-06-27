@@ -1,6 +1,6 @@
 class UserModel {
   final int id;
-  final String qqNumber;
+  final String rechNumber;
   final String username;
   final String nickname;
   final String avatar;
@@ -14,10 +14,15 @@ class UserModel {
   final String location;
   final String occupation;
   final int onlineStatus;
+  final String bio;
+  final List<String> tags;
+  final int likes;
+  final int exp;
+  final String lastCheckIn;
 
   UserModel({
     required this.id,
-    required this.qqNumber,
+    required this.rechNumber,
     required this.username,
     required this.nickname,
     required this.avatar,
@@ -31,12 +36,17 @@ class UserModel {
     required this.location,
     required this.occupation,
     required this.onlineStatus,
+    required this.bio,
+    required this.tags,
+    required this.likes,
+    required this.exp,
+    required this.lastCheckIn,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: json['id'] ?? 0,
-      qqNumber: json['qq_number'] ?? '',
+      rechNumber: json['rech_number'] ?? '',
       username: json['username'] ?? '',
       nickname: json['nickname'] ?? '',
       avatar: json['avatar'] ?? '',
@@ -50,13 +60,18 @@ class UserModel {
       location: json['location'] ?? '',
       occupation: json['occupation'] ?? '',
       onlineStatus: json['online_status'] ?? 0,
+      bio: json['bio'] ?? '',
+      tags: (json['tags'] as List?)?.map((e) => e.toString()).toList() ?? [],
+      likes: json['likes'] ?? 0,
+      exp: json['exp'] ?? 0,
+      lastCheckIn: json['last_check_in'] ?? '',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'qq_number': qqNumber,
+      'rech_number': rechNumber,
       'username': username,
       'nickname': nickname,
       'avatar': avatar,
@@ -70,6 +85,11 @@ class UserModel {
       'location': location,
       'occupation': occupation,
       'online_status': onlineStatus,
+      'bio': bio,
+      'tags': tags,
+      'likes': likes,
+      'exp': exp,
+      'last_check_in': lastCheckIn,
     };
   }
 }
@@ -113,7 +133,7 @@ class UserDevice {
 
 class FriendInfo {
   final int id;
-  final String qqNumber;
+  final String rechNumber;
   final String nickname;
   final String remark;
   final String avatar;
@@ -122,7 +142,7 @@ class FriendInfo {
 
   FriendInfo({
     required this.id,
-    required this.qqNumber,
+    required this.rechNumber,
     required this.nickname,
     required this.remark,
     required this.avatar,
@@ -133,7 +153,7 @@ class FriendInfo {
   factory FriendInfo.fromJson(Map<String, dynamic> json) {
     return FriendInfo(
       id: json['id'] ?? 0,
-      qqNumber: json['qq_number'] ?? '',
+      rechNumber: json['rech_number'] ?? '',
       nickname: json['nickname'] ?? '',
       remark: json['remark'] ?? '',
       avatar: json['avatar'] ?? '',
@@ -224,6 +244,7 @@ class MessageModel {
   final int senderId;
   final String senderName;
   final String senderAvatar;
+  final int senderLevel;
   final int msgType;
   final String content;
   final String mediaUrl;
@@ -243,6 +264,7 @@ class MessageModel {
     required this.senderId,
     required this.senderName,
     required this.senderAvatar,
+    this.senderLevel = 1,
     required this.msgType,
     required this.content,
     required this.mediaUrl,
@@ -264,6 +286,7 @@ class MessageModel {
       senderId: json['sender_id'] ?? 0,
       senderName: json['sender_name'] ?? '',
       senderAvatar: json['sender_avatar'] ?? '',
+      senderLevel: json['sender_level'] ?? 1,
       msgType: json['msg_type'] ?? 1,
       content: json['content'] ?? '',
       mediaUrl: json['media_url'] ?? '',

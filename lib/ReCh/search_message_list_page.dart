@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_qq/QQ/widget/appbar.dart';
-import 'package:flutter_qq/QQ/widget/serach_field.dart';
+import 'package:rech/ReCh/widget/appbar.dart';
+import 'package:rech/ReCh/widget/serach_field.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
@@ -19,7 +19,7 @@ class _SearchMessageListPageState extends State<SearchMessageListPage>
   final List<Map<String, String>> _searchCategories = const [
     {'icon': 'User-plus', 'label': '找人/群', 'color': '0xFFFF9500'},
     {'icon': 'Group 151', 'label': '表情', 'color': '0xFF5856D6'},
-    {'icon': 'QQ', 'label': '小程序', 'color': '0xFF34C759'},
+    {'icon': 'ReCh', 'label': '小程序', 'color': '0xFF34C759'},
     {'icon': 'Expand', 'label': '扫一扫', 'color': '0xFF007AFF'},
   ];
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_qq/services/permission_service.dart';
-import 'package:flutter_qq/services/notification_service.dart';
-import 'package:flutter_qq/states/app_state.dart';
+import 'package:rech/services/permission_service.dart';
+import 'package:rech/services/notification_service.dart';
+import 'package:rech/states/app_state.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {

@@ -3,20 +3,20 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_qq/QQ/bodys/user_contacts_list_page.dart';
-import 'package:flutter_qq/QQ/bodys/user_message_list_page.dart';
-import 'package:flutter_qq/QQ/user_option_page.dart';
+import 'package:rech/ReCh/bodys/user_contacts_list_page.dart';
+import 'package:rech/ReCh/bodys/user_message_list_page.dart';
+import 'package:rech/ReCh/user_option_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
-class QQFrame extends StatefulWidget {
-  const QQFrame({super.key});
+class ReChFrame extends StatefulWidget {
+  const ReChFrame({super.key});
 
   @override
-  State<QQFrame> createState() => _QQFrameState();
+  State<ReChFrame> createState() => _ReChFrameState();
 }
 
-class _QQFrameState extends State<QQFrame> with AutomaticKeepAliveClientMixin {
+class _ReChFrameState extends State<ReChFrame> with AutomaticKeepAliveClientMixin {
   int index = 0;
   List<Widget> pages = const [
     UserMessageListPage(),

@@ -3,13 +3,13 @@ import 'dart:ui';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_qq/QQ/model/msg_model.dart';
-import 'package:flutter_qq/QQ/user_information_page.dart';
-import 'package:flutter_qq/QQ/widget/serach_field.dart';
-import 'package:flutter_qq/models/user_model.dart';
-import 'package:flutter_qq/services/api_service.dart';
-import 'package:flutter_qq/services/tcp_service.dart';
-import 'package:flutter_qq/states/app_state.dart';
+import 'package:rech/ReCh/model/msg_model.dart';
+import 'package:rech/ReCh/user_information_page.dart';
+import 'package:rech/ReCh/widget/serach_field.dart';
+import 'package:rech/models/user_model.dart';
+import 'package:rech/services/api_service.dart';
+import 'package:rech/services/tcp_service.dart';
+import 'package:rech/states/app_state.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -606,6 +606,25 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
       return _buildSystemMessage('${msg.senderName} 撤回了一条消息');
     }
 
+    final nameRow = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          msg.senderName,
+          style: const TextStyle(fontSize: 11, color: Color(0xFF8A8A8E)),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          "Lv.${msg.senderLevel}",
+          style: const TextStyle(
+            fontSize: 11,
+            color: Color(0xFFFF9500),
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+
     return GestureDetector(
       onLongPressStart: (details) {
         _showMessageMenu(context, msg, details);
@@ -615,7 +634,14 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildMessageBubble(msg, width, isMe),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    nameRow,
+                    const SizedBox(height: 2),
+                    _buildMessageBubble(msg, width, isMe),
+                  ],
+                ),
                 const SizedBox(width: 10),
                 _buildAvatar(msg, isMe),
               ],
@@ -626,7 +652,14 @@ class _MessageDetailsPageState extends State<MessageDetailsPage> {
               children: [
                 _buildAvatar(msg, isMe),
                 const SizedBox(width: 10),
-                _buildMessageBubble(msg, width, isMe),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    nameRow,
+                    const SizedBox(height: 2),
+                    _buildMessageBubble(msg, width, isMe),
+                  ],
+                ),
               ],
             ),
     );

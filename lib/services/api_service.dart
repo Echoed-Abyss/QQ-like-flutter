@@ -104,6 +104,91 @@ class ApiService {
     }
   }
 
+  Future<ApiResponse<T>> _put<T>(
+    String path,
+    Map<String, dynamic> body, {
+    bool needAuth = true,
+    T Function(dynamic)? dataParser,
+  }) async {
+    final url = Uri.parse('${ApiConfig.baseUrl}${ApiConfig.apiVersion}$path');
+    final timestamp = SignatureUtil.getTimestamp();
+    final nonce = SignatureUtil.generateNonce();
+    final bodyStr = json.encode(body);
+    final sign = SignatureUtil.generateSignature(bodyStr, timestamp, nonce);
+
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'X-Timestamp': timestamp.toString(),
+      'X-Nonce': nonce,
+      'X-Sign': sign,
+    };
+
+    if (needAuth) {
+      final token = await StorageService.getToken();
+      if (token != null) {
+        headers['Authorization'] = 'Bearer $token';
+      }
+    }
+
+    try {
+      final response = await http.put(
+        url,
+        headers: headers,
+        body: bodyStr,
+      ).timeout(const Duration(seconds: 15));
+
+      final jsonData = json.decode(response.body);
+      return ApiResponse<T>.fromJson(jsonData, dataParser);
+    } catch (e) {
+      return ApiResponse<T>(
+        code: -1,
+        message: '网络请求失败: $e',
+        time: 0,
+      );
+    }
+  }
+
+  Future<ApiResponse<T>> _delete<T>(
+    String path, {
+    bool needAuth = true,
+    T Function(dynamic)? dataParser,
+  }) async {
+    final url = Uri.parse('${ApiConfig.baseUrl}${ApiConfig.apiVersion}$path');
+    final timestamp = SignatureUtil.getTimestamp();
+    final nonce = SignatureUtil.generateNonce();
+    final sign = SignatureUtil.generateSignature('', timestamp, nonce);
+
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'X-Timestamp': timestamp.toString(),
+      'X-Nonce': nonce,
+      'X-Sign': sign,
+    };
+
+    if (needAuth) {
+      final token = await StorageService.getToken();
+      if (token != null) {
+        headers['Authorization'] = 'Bearer $token';
+      }
+    }
+
+    try {
+      final response = await http.delete(
+        url,
+        headers: headers,
+      ).timeout(const Duration(seconds: 15));
+
+      final jsonData = json.decode(response.body);
+      return ApiResponse<T>.fromJson(jsonData, dataParser);
+    } catch (e) {
+      return ApiResponse<T>(
+        code: -1,
+        message: '网络请求失败: $e',
+        time: 0,
+      );
+    }
+  }
+
   Future<ApiResponse<UserModel>> register(
       String username, String password, String nickname) async {
     return _post<UserModel>(
@@ -268,18 +353,25 @@ class ApiService {
   }
 
   Future<ApiResponse<Map<String, dynamic>>> createGroup(
-      String name, String description) async {
+      String name, String description, {String? avatar}) async {
+    final body = <String, dynamic>{
+      'name': name,
+      'description': description,
+    };
+    if (avatar != null && avatar.isNotEmpty) {
+      body['avatar'] = avatar;
+    }
     return _post<Map<String, dynamic>>(
       '/group/create',
-      {'name': name, 'description': description},
+      body,
       dataParser: (data) => data as Map<String, dynamic>,
     );
   }
 
-  Future<ApiResponse> joinGroup(String groupNumber, String message) async {
+  Future<ApiResponse> joinGroup(int groupId) async {
     return _post(
-      '/group/join',
-      {'group_number': groupNumber, 'message': message},
+      '/group/$groupId/join',
+      {},
       dataParser: null,
     );
   }
@@ -311,5 +403,68 @@ class ApiService {
       {'content': content},
       dataParser: (data) => data as Map<String, dynamic>,
     );
+  }
+
+  Future<ApiResponse> updateProfile(Map<String, dynamic> data) async {
+    return _put('/user/profile', data);
+  }
+
+  Future<ApiResponse> changePassword(String oldPassword, String newPassword) async {
+    return _put('/user/password', {
+      'old_password': oldPassword,
+      'new_password': newPassword,
+    });
+  }
+
+  Future<ApiResponse> deleteAccount() async {
+    return _delete('/user');
+  }
+
+  Future<ApiResponse> addFriend(int userId, String remark, int groupId) async {
+    return _post('/friend/add', {
+      'user_id': userId,
+      'remark': remark,
+      'group_id': groupId,
+    });
+  }
+
+  Future<ApiResponse> getLikeRank() async {
+    return _get('/user/like/rank');
+  }
+
+  Future<ApiResponse> likeUser(int userId) async {
+    return _post('/user/like/$userId', {});
+  }
+
+  Future<ApiResponse> checkIn() async {
+    return _post('/user/checkin', {});
+  }
+
+  Future<ApiResponse> getGroupJoinRequests() async {
+    return _get('/group/join-requests');
+  }
+
+  Future<ApiResponse> handleGroupJoinRequest(int requestId, String status) async {
+    return _put('/group/join-request/$requestId', {
+      'status': status,
+    });
+  }
+
+  Future<ApiResponse> updateGroupSettings(int groupId, Map<String, dynamic> data) async {
+    return _put('/group/$groupId/settings', data);
+  }
+
+  Future<ApiResponse> addGroupAdmin(int groupId, int userId) async {
+    return _post('/group/$groupId/admin', {
+      'user_id': userId,
+    });
+  }
+
+  Future<ApiResponse> removeGroupAdmin(int groupId, int userId) async {
+    return _delete('/group/$groupId/admin/$userId');
+  }
+
+  Future<ApiResponse> checkUpdate() async {
+    return _get('/app/update');
   }
 }

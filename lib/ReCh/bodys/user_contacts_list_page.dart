@@ -2,9 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_qq/QQ/search_message_list_page.dart';
-import 'package:flutter_qq/QQ/user_option_page.dart';
-import 'package:flutter_qq/QQ/widget/appbar.dart';
+import 'package:rech/ReCh/search_message_list_page.dart';
+import 'package:rech/ReCh/user_option_page.dart';
+import 'package:rech/ReCh/widget/appbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 

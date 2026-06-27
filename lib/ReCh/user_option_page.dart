@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_qq/QQ/user_information_page.dart';
-import 'package:flutter_qq/QQ/widget/appbar.dart';
-import 'package:flutter_qq/QQ/widget/bitmeun.dart';
-import 'package:flutter_qq/models/user_model.dart';
-import 'package:flutter_qq/states/app_state.dart';
+import 'package:rech/ReCh/user_information_page.dart';
+import 'package:rech/ReCh/widget/appbar.dart';
+import 'package:rech/ReCh/widget/bitmeun.dart';
+import 'package:rech/models/user_model.dart';
+import 'package:rech/states/app_state.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:rech/ReCh/settings_page.dart';
 
 class UserOptionPage extends StatefulWidget {
   const UserOptionPage({super.key});
@@ -27,6 +28,7 @@ class _UserOptionPageState extends State<UserOptionPage>
     return Consumer<AppState>(
       builder: (context, appState, child) {
         final user = appState.currentUser;
+        final isDarkMode = appState.isDarkMode;
         return Scaffold(
           backgroundColor: const Color(0xFFF5F6F8),
           extendBodyBehindAppBar: true,
@@ -38,7 +40,33 @@ class _UserOptionPageState extends State<UserOptionPage>
                   context: context,
                   offsetdy: 56,
                   child: TextButton.icon(
-                    onPressed: () {},
+                    onPressed: () async {
+                      final result = await appState.checkIn();
+                      if (result != null && context.mounted) {
+                        final exp = result['added_exp'] ?? 0;
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            title: const Text('打卡成功', textAlign: TextAlign.center),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.check_circle, color: Color(0xFF34C759), size: 64),
+                                const SizedBox(height: 16),
+                                Text('获得 $exp 经验值', style: const TextStyle(fontSize: 18)),
+                              ],
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('确定', style: TextStyle(color: Color(0xFF12B7F5))),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    },
                     style: const ButtonStyle(
                         padding: MaterialStatePropertyAll(EdgeInsets.zero),
                         overlayColor:
@@ -53,19 +81,9 @@ class _UserOptionPageState extends State<UserOptionPage>
                   ),
                   items: [
                     BitMeunItem(
-                      icon: SvgPicture.asset("assets/svg/Group 151.svg"),
-                      onTap: () {},
-                      text: '创建DAO',
-                    ),
-                    BitMeunItem(
-                      icon: SvgPicture.asset("assets/svg/QQ.svg"),
+                      icon: SvgPicture.asset("assets/svg/ReCh.svg"),
                       onTap: () {},
                       text: '创建群聊',
-                    ),
-                    BitMeunItem(
-                      icon: SvgPicture.asset("assets/svg/User-plus.svg"),
-                      onTap: () {},
-                      text: '添加好友',
                     ),
                     BitMeunItem(
                       icon: SvgPicture.asset("assets/svg/Expand.svg"),
@@ -236,7 +254,7 @@ class _UserOptionPageState extends State<UserOptionPage>
                                               Text(
                                                 "Lv.${user?.level ?? 1}",
                                                 style: const TextStyle(
-                                                  color: Color(0xFFFFB800),
+                                                  color: Color(0xFFFF9500),
                                                   fontSize: 12,
                                                   fontWeight:
                                                       FontWeight.w600,
@@ -325,26 +343,7 @@ class _UserOptionPageState extends State<UserOptionPage>
                     ],
                   ),
                 ),
-                const SizedBox(height: 12),
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.03),
-                        blurRadius: 10,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      _buildDeviceItem(appState),
-                    ],
-                  ),
-                ),
+
                 SizedBox(height: bottom + 100),
               ],
             ),
@@ -406,70 +405,6 @@ class _UserOptionPageState extends State<UserOptionPage>
         ],
       );
     }
-  }
-
-  Widget _buildDeviceItem(AppState appState) {
-    final devices = appState.devices
-        .where((d) => d.isOnline)
-        .toList();
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      child: GestureDetector(
-        onTap: () {
-          Get.toNamed('/devices');
-        },
-        child: Row(
-          children: [
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: const Color(0xFF34C759).withOpacity(0.15),
-                borderRadius: BorderRadius.circular(9),
-              ),
-              child: Center(
-                child: SvgPicture.asset(
-                  "assets/svg/desktop 1.svg",
-                  width: 18,
-                  color: const Color(0xFF34C759),
-                ),
-              ),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "在线设备 (${devices.length})",
-                    style: const TextStyle(
-                      fontSize: 15,
-                      color: Color(0xFF1A1A1A),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    devices.isNotEmpty
-                        ? devices.map((d) => getDeviceTypeName(d.deviceType)).join("、")
-                        : "无在线设备",
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFF8A8A8E),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SvgPicture.asset(
-              "assets/svg/chevronright.svg",
-              height: 18,
-              color: const Color(0xFFBBBBBB),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   Widget _buildDivider() {
@@ -552,33 +487,43 @@ class _UserOptionPageState extends State<UserOptionPage>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildBottomItem("setting", "设置"),
+          _buildBottomItem("setting", "设置", onTap: () {
+            Get.to(() => const SettingsPage());
+          }),
           _buildBottomItem("mobile", "等级"),
-          _buildBottomItem("dark mode", "夜间"),
-          _buildBottomItem("On", "天气"),
+          _buildBottomItem(
+            isDarkMode ? "On" : "dark mode",
+            isDarkMode ? "白天" : "夜间",
+            onTap: () {
+              appState.toggleDarkMode();
+            },
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildBottomItem(String svg, String str) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        SvgPicture.asset(
-          "assets/svg/$svg.svg",
-          width: 24,
-          color: const Color(0xFF666666),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          str,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Color(0xFF8A8A8E),
+  Widget _buildBottomItem(String svg, String str, {VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SvgPicture.asset(
+            "assets/svg/$svg.svg",
+            width: 24,
+            color: const Color(0xFF666666),
           ),
-        ),
-      ],
+          const SizedBox(height: 4),
+          Text(
+            str,
+            style: const TextStyle(
+              fontSize: 12,
+              color: Color(0xFF8A8A8E),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

@@ -1,15 +1,14 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_qq/QQ/message_details_page.dart';
-import 'package:flutter_qq/QQ/model/msg_model.dart';
-import 'package:flutter_qq/QQ/search_message_list_page.dart';
-import 'package:flutter_qq/QQ/user_device_page.dart';
-import 'package:flutter_qq/QQ/user_option_page.dart';
-import 'package:flutter_qq/QQ/widget/appbar.dart';
-import 'package:flutter_qq/QQ/widget/bitmeun.dart';
-import 'package:flutter_qq/models/user_model.dart';
-import 'package:flutter_qq/states/app_state.dart';
+import 'package:rech/ReCh/message_details_page.dart';
+import 'package:rech/ReCh/model/msg_model.dart';
+import 'package:rech/ReCh/search_message_list_page.dart';
+import 'package:rech/ReCh/user_option_page.dart';
+import 'package:rech/ReCh/widget/appbar.dart';
+import 'package:rech/ReCh/widget/bitmeun.dart';
+import 'package:rech/models/user_model.dart';
+import 'package:rech/states/app_state.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -34,70 +33,9 @@ class _UserMessageListPageState extends State<UserMessageListPage>
   }
 
   void initData() async {
-    Future.delayed(const Duration(seconds: 2), () {
-      data.add(MsgModel(
-          imageurl: 'https://w.wallhaven.cc/full/jx/wallhaven-jxl31y.png',
-          msg: '所以，这也仅仅是无用的令戒：🐮🐎',
-          name: '造物主动态桌面Ⅰ群',
-          time: '下午4:20',
-          count: "+99"));
-      data.add(MsgModel(
-          imageurl: 'https://w.wallhaven.cc/full/2y/wallhaven-2y6w5y.jpg',
-          msg: '花开富贵:(❁´◡`❁)',
-          name: 'C# WPF ASP.NET',
-          time: '上午9:40',
-          count: "1"));
-      data.add(MsgModel(
-          imageurl: 'https://w.wallhaven.cc/full/we/wallhaven-we3wz6.jpg',
-          msg: '你摩托车怎么办呢',
-          name: '宋涛',
-          time: '下午4:33'));
-      data.add(MsgModel(
-          imageurl: 'https://w.wallhaven.cc/full/yx/wallhaven-yx2lxl.png',
-          msg: '楼下两个人打起来了',
-          name: 'temp',
-          time: '下午13:16'));
-      data.add(MsgModel(
-          imageurl: 'https://w.wallhaven.cc/full/yx/wallhaven-yxkw7d.jpg',
-          msg: '还没有篮子',
-          name: '王怀晨',
-          time: '下午16:05'));
-      data.add(MsgModel(
-          imageurl: 'https://w.wallhaven.cc/full/rr/wallhaven-rreejm.jpg',
-          msg: '轩宝：[聊天记录]',
-          name: '轩宝',
-          time: '星期一11:21',
-          count: "1"));
-      data.add(MsgModel(
-          imageurl: 'https://w.wallhaven.cc/full/7p/wallhaven-7pxx99.png',
-          msg: '[图片][图片][图片]',
-          name: '小号',
-          time: '昨天晚上9:03'));
-      data.add(MsgModel(
-          imageurl: 'https://w.wallhaven.cc/full/7p/wallhaven-7pxxj9.jpg',
-          msg: '八嘎の君：八嘎八嘎八嘎,真是小八嘎呢~~',
-          name: '八嘎の君',
-          time: '下午12:14',
-          count: "5"));
-      data.add(MsgModel(
-          imageurl: 'https://w.wallhaven.cc/full/m3/wallhaven-m3oyx8.jpg',
-          msg: '牛牛超人：[图片]',
-          name: '发哥是0群友是1',
-          time: '昨天晚上7:30'));
-      data.add(MsgModel(
-          imageurl: 'https://w.wallhaven.cc/full/5g/wallhaven-5gpwd7.jpg',
-          msg: '7_bit：皮肤都没有',
-          name: '六号、！、7_bit（3）',
-          time: '晚上7:30',
-          count: "3"));
-      data.add(MsgModel(
-          imageurl: 'https://w.wallhaven.cc/full/zy/wallhaven-zyvg1j.png',
-          msg: '[聊天记录]',
-          name: '胖胖',
-          time: '昨天19:10'));
-      setState(() {
-        loading = true;
-      });
+    // TODO: 从服务端获取真实消息列表数据
+    setState(() {
+      loading = true;
     });
   }
 
@@ -365,6 +303,36 @@ class _UserMessageListPageState extends State<UserMessageListPage>
                           ],
                         ),
                       ),
+                      if (devices.isNotEmpty) ...[
+                        const SizedBox(height: 2),
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                              "assets/svg/Monitor.svg",
+                              height: 10,
+                              color: const Color(0xFF8A8A8E),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              devices.first.deviceName.isNotEmpty
+                                  ? devices.first.deviceName
+                                  : getDeviceTypeName(devices.first.deviceType),
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: Color(0xFF8A8A8E),
+                              ),
+                            ),
+                            if (devices.length > 1)
+                              Text(
+                                " 等${devices.length}台设备",
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  color: Color(0xFF8A8A8E),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ],
                     ],
                   )),
                   Container(
@@ -394,19 +362,9 @@ class _UserMessageListPageState extends State<UserMessageListPage>
                         ),
                         items: [
                           BitMeunItem(
-                            icon: SvgPicture.asset("assets/svg/Group 151.svg"),
-                            onTap: () {},
-                            text: '创建DAO',
-                          ),
-                          BitMeunItem(
-                            icon: SvgPicture.asset("assets/svg/QQ.svg"),
+                            icon: SvgPicture.asset("assets/svg/ReCh.svg"),
                             onTap: () {},
                             text: '创建群聊',
-                          ),
-                          BitMeunItem(
-                            icon: SvgPicture.asset("assets/svg/User-plus.svg"),
-                            onTap: () {},
-                            text: '添加好友',
                           ),
                           BitMeunItem(
                             icon: SvgPicture.asset("assets/svg/Expand.svg"),
@@ -471,81 +429,7 @@ class _UserMessageListPageState extends State<UserMessageListPage>
                 child: loading
                     ? Column(
                         children: [
-                          if (devices.isNotEmpty) ...[
-                            GestureDetector(
-                              onTap: () {
-                                Get.to(const UserDevicePage(),
-                                    transition: Transition.rightToLeft);
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 14),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 36,
-                                      height: 36,
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFF12B7F5)
-                                            .withOpacity(0.1),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Center(
-                                        child: SvgPicture.asset(
-                                          "assets/svg/Monitor.svg",
-                                          color: const Color(0xFF12B7F5),
-                                          height: 20,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "已登录 ${devices.map((d) => getDeviceTypeName(d.deviceType)).join("、")}",
-                                            style: const TextStyle(
-                                                color: Color(0xFF1A1A1A),
-                                                fontSize: 15,
-                                                fontWeight:
-                                                    FontWeight.w500),
-                                          ),
-                                          SizedBox(height: 2),
-                                          Text(
-                                            devices.length > 1
-                                                ? "${devices.length}台设备在线"
-                                                : devices.first.deviceName.isNotEmpty
-                                                    ? devices.first.deviceName
-                                                    : getDeviceTypeName(
-                                                        devices.first.deviceType),
-                                            style: const TextStyle(
-                                              color: Color(0xFF8A8A8E),
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    SvgPicture.asset(
-                                      "assets/svg/chevronright.svg",
-                                      height: 20,
-                                      color: const Color(0xFFC7C7CC),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 64),
-                              child: Divider(
-                                thickness: 0.3,
-                                color: Colors.grey.withOpacity(0.2),
-                                height: 1,
-                              ),
-                            ),
-                          ],
+
                           ...List.generate(data.length, (index) {
                             return Column(
                               children: [

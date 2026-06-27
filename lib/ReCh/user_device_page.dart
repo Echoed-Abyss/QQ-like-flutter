@@ -2,9 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_qq/QQ/widget/appbar.dart';
-import 'package:flutter_qq/models/user_model.dart';
-import 'package:flutter_qq/states/app_state.dart';
+import 'package:rech/ReCh/widget/appbar.dart';
+import 'package:rech/models/user_model.dart';
+import 'package:rech/states/app_state.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
@@ -287,19 +287,19 @@ class _UserDevicePageState extends State<UserDevicePage> {
   String _getDeviceTitle(int deviceType) {
     switch (deviceType) {
       case deviceTypeAndroid:
-        return "QQ Android版";
+        return "ReCh Android版";
       case deviceTypeIOS:
-        return "QQ iOS版";
+        return "ReCh iOS版";
       case deviceTypeWindows:
-        return "QQ Windows版";
+        return "ReCh Windows版";
       case deviceTypeMac:
-        return "QQ Mac版";
+        return "ReCh Mac版";
       case deviceTypeLinux:
-        return "QQ Linux版";
+        return "ReCh Linux版";
       case deviceTypeWeb:
-        return "QQ网页版";
+        return "ReCh网页版";
       default:
-        return "QQ 未知设备";
+        return "ReCh 未知设备";
     }
   }
 

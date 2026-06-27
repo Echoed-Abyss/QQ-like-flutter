@@ -1,4 +1,4 @@
-package com.example.flutter_qq
+package com.roteam.rech
 
 import io.flutter.embedding.android.FlutterActivity
 

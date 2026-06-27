@@ -17,6 +17,10 @@ class AppState extends ChangeNotifier {
   List<FriendInfo> _friendList = [];
   bool _isLoading = false;
   String? _errorMessage;
+  bool _isCheckedIn = false;
+  bool _isDarkMode = false;
+  List<Map<String, dynamic>> _accounts = [];
+  bool _notificationsEnabled = true;
 
   bool get isLoggedIn => _isLoggedIn;
   UserModel? get currentUser => _currentUser;
@@ -26,6 +30,14 @@ class AppState extends ChangeNotifier {
   List<FriendInfo> get friendList => _friendList;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
+  bool get isCheckedIn => _isCheckedIn;
+  bool get isDarkMode => _isDarkMode;
+  List<Map<String, dynamic>> get accounts => _accounts;
+  bool get notificationsEnabled => _notificationsEnabled;
+
+  int get currentLevel => _currentUser?.level ?? 1;
+  int get currentExp => _currentUser?.exp ?? 0;
+  int get currentLikes => _currentUser?.likes ?? 0;
 
   Future<bool> login(String account, String password) async {
     _isLoading = true;
@@ -110,7 +122,7 @@ class AppState extends ChangeNotifier {
       if (_currentUser != null) {
         _currentUser = UserModel(
           id: _currentUser!.id,
-          qqNumber: _currentUser!.qqNumber,
+          rechNumber: _currentUser!.rechNumber,
           username: _currentUser!.username,
           nickname: _currentUser!.nickname,
           avatar: _currentUser!.avatar,
@@ -124,6 +136,11 @@ class AppState extends ChangeNotifier {
           location: _currentUser!.location,
           occupation: _currentUser!.occupation,
           onlineStatus: status,
+          bio: _currentUser!.bio,
+          tags: _currentUser!.tags,
+          likes: _currentUser!.likes,
+          exp: _currentUser!.exp,
+          lastCheckIn: _currentUser!.lastCheckIn,
         );
         notifyListeners();
       }
@@ -192,5 +209,107 @@ class AppState extends ChangeNotifier {
       }
     }
     return false;
+  }
+
+  Future<Map<String, dynamic>?> checkIn() async {
+    try {
+      final response = await ApiService().checkIn();
+      if (response.isSuccess && response.data != null) {
+        if (_currentUser != null) {
+          final newExp = response.data!['exp'] ?? _currentUser!.exp;
+          final newLevel = response.data!['level'] ?? _currentUser!.level;
+          _currentUser = UserModel(
+            id: _currentUser!.id,
+            rechNumber: _currentUser!.rechNumber,
+            username: _currentUser!.username,
+            nickname: _currentUser!.nickname,
+            avatar: _currentUser!.avatar,
+            banner: _currentUser!.banner,
+            signature: _currentUser!.signature,
+            level: newLevel,
+            levelExp: _currentUser!.levelExp,
+            gender: _currentUser!.gender,
+            age: _currentUser!.age,
+            constellation: _currentUser!.constellation,
+            location: _currentUser!.location,
+            occupation: _currentUser!.occupation,
+            onlineStatus: _currentUser!.onlineStatus,
+            bio: _currentUser!.bio,
+            tags: _currentUser!.tags,
+            likes: _currentUser!.likes,
+            exp: newExp,
+            lastCheckIn: DateTime.now().toIso8601String(),
+          );
+          _isCheckedIn = true;
+          notifyListeners();
+        }
+        return response.data;
+      }
+    } catch (e) {
+      _errorMessage = e.toString();
+    }
+    return null;
+  }
+
+  int getLevel(int exp) {
+    if (exp < 100) return 1;
+    final tiers = [
+      [10, 100], [20, 150], [30, 200], [40, 300], [50, 500]
+    ];
+    int remainingExp = exp;
+    int currentLevel = 1;
+    for (var tier in tiers) {
+      int maxLevel = tier[0];
+      int expPerLevel = tier[1];
+      while (currentLevel < maxLevel && remainingExp >= expPerLevel) {
+        remainingExp -= expPerLevel;
+        currentLevel++;
+      }
+      if (currentLevel >= maxLevel) continue;
+      break;
+    }
+    if (currentLevel > 50) currentLevel = 50;
+    return currentLevel;
+  }
+
+  int getExpForNextLevel(int level) {
+    if (level >= 50) return 0;
+    if (level < 10) return 100;
+    if (level < 20) return 150;
+    if (level < 30) return 200;
+    if (level < 40) return 300;
+    return 500;
+  }
+
+  void toggleDarkMode() {
+    _isDarkMode = !_isDarkMode;
+    notifyListeners();
+  }
+
+  void toggleNotifications() {
+    _notificationsEnabled = !_notificationsEnabled;
+    notifyListeners();
+  }
+
+  void addAccount(Map<String, dynamic> account) {
+    _accounts.add(account);
+    notifyListeners();
+  }
+
+  void removeAccount(int index) {
+    if (index >= 0 && index < _accounts.length) {
+      _accounts.removeAt(index);
+      notifyListeners();
+    }
+  }
+
+  Future<bool> switchAccount(int index) async {
+    if (index < 0 || index >= _accounts.length) return false;
+    final account = _accounts[index];
+    final token = account['token'] as String?;
+    if (token == null || token.isEmpty) return false;
+    await StorageService.saveToken(token);
+    await checkLoginStatus();
+    return true;
   }
 }
