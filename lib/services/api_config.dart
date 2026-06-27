@@ -3,7 +3,7 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ApiConfig {
-  static const String baseUrl = 'https://rechflu.leatiny.icu';
+  static const String baseUrl = 'https://qqflu.leatiny.icu';
   static const String tcpHost = '160.202.46.194';
   static const int tcpPort = 10909;
   static const String appSecret = 'rPubfToVrhIoSXdxsuybgrbUDZfrYZOhFWXpGsilEHzFlYkDHE';
