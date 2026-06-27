@@ -5,6 +5,8 @@ import 'package:rech/ReCh/message_details_page.dart';
 import 'package:rech/ReCh/model/msg_model.dart';
 import 'package:rech/ReCh/search_message_list_page.dart';
 import 'package:rech/ReCh/user_option_page.dart';
+import 'package:rech/ReCh/create_group_page.dart';
+import 'package:rech/ReCh/scan_page.dart';
 import 'package:rech/ReCh/widget/appbar.dart';
 import 'package:rech/ReCh/widget/bitmeun.dart';
 import 'package:rech/models/user_model.dart';
@@ -363,12 +365,16 @@ class _UserMessageListPageState extends State<UserMessageListPage>
                         items: [
                           BitMeunItem(
                             icon: SvgPicture.asset("assets/svg/Add_Plus_Circle.svg"),
-                            onTap: () {},
+                            onTap: () {
+                              Get.to(() => const CreateGroupPage());
+                            },
                             text: '创建群聊',
                           ),
                           BitMeunItem(
                             icon: SvgPicture.asset("assets/svg/Expand.svg"),
-                            onTap: () {},
+                            onTap: () {
+                              Get.to(() => const ScanPage());
+                            },
                             text: '扫一扫',
                           ),
                         ]),

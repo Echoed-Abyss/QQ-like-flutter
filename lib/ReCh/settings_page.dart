@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:rech/ReCh/change_password_page.dart';
 import 'package:rech/ReCh/delete_account_page.dart';
 import 'package:rech/ReCh/user_device_page.dart';
+import 'package:rech/ReCh/account_manage_page.dart';
 import 'package:rech/ReCh/widget/appbar.dart';
 import 'package:rech/services/api_service.dart';
 import 'package:rech/states/app_state.dart';
@@ -179,7 +180,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       title: '账号管理',
                       subtitle: appState.currentUser?.username ?? '',
                       onTap: () {
-                        // TODO: multi-account management
+                        Get.to(() => const AccountManagePage());
                       },
                     );
                   },

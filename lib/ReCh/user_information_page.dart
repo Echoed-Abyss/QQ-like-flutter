@@ -3,11 +3,13 @@ import 'dart:ui';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:rech/ReCh/edit_profile_page.dart';
 import 'package:rech/ReCh/widget/appbar.dart';
 import 'package:rech/models/user_model.dart';
 import 'package:rech/services/api_service.dart';
 import 'package:rech/states/app_state.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -322,6 +324,9 @@ class _UserInformationPageState extends State<UserInformationPage>
                                     const Color(0xFF8A8A8E),
                                     Colors.white,
                                     borderColor: const Color(0xFFE5E5EA),
+                                    onTap: () {
+                                      // TODO: 个性名片编辑
+                                    },
                                   ),
                                 ),
                                 const SizedBox(width: 12),
@@ -331,6 +336,9 @@ class _UserInformationPageState extends State<UserInformationPage>
                                     const Color(0xFF8A8A8E),
                                     Colors.white,
                                     borderColor: const Color(0xFFE5E5EA),
+                                    onTap: () {
+                                      Get.to(() => const EditProfilePage());
+                                    },
                                   ),
                                 ),
                               ] else ...[
@@ -906,32 +914,35 @@ class _UserInformationPageState extends State<UserInformationPage>
   }
 
   Widget _buildActionButton(String text, Color textColor, Color bgColor,
-      {Color? borderColor, bool hasShadow = false}) {
-    return Container(
-      height: 48,
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(14),
-        border: borderColor != null
-            ? Border.all(color: borderColor, width: 0.5)
-            : null,
-        boxShadow: hasShadow
-            ? [
-                BoxShadow(
-                  color: const Color(0xFF12B7F5).withOpacity(0.3),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ]
-            : null,
-      ),
-      child: Center(
-        child: Text(
-          text,
-          style: TextStyle(
-            color: textColor,
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
+      {Color? borderColor, bool hasShadow = false, VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 48,
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(14),
+          border: borderColor != null
+              ? Border.all(color: borderColor, width: 0.5)
+              : null,
+          boxShadow: hasShadow
+              ? [
+                  BoxShadow(
+                    color: const Color(0xFF12B7F5).withOpacity(0.3),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+              : null,
+        ),
+        child: Center(
+          child: Text(
+            text,
+            style: TextStyle(
+              color: textColor,
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       ),

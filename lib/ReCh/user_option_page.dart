@@ -9,6 +9,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:rech/ReCh/settings_page.dart';
+import 'package:rech/ReCh/create_group_page.dart';
+import 'package:rech/ReCh/scan_page.dart';
 
 class UserOptionPage extends StatefulWidget {
   const UserOptionPage({super.key});
@@ -35,11 +37,11 @@ class _UserOptionPageState extends State<UserOptionPage>
           appBar: StudyAppBar.MyAppBar("", context,
               backgroundColor: Colors.transparent,
               systemOverlayStyle: SystemUiOverlayStyle.dark,
-              leadingWidth: 100,
-              leading: MyMeun(
-                  context: context,
-                  offsetdy: 56,
-                  child: TextButton.icon(
+              leadingWidth: 140,
+              leading: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextButton.icon(
                     onPressed: () async {
                       final result = await appState.checkIn();
                       if (result != null && context.mounted) {
@@ -79,18 +81,42 @@ class _UserOptionPageState extends State<UserOptionPage>
                         style: TextStyle(
                             color: Color(0xFF1A1A1A), fontSize: 16)),
                   ),
-                  items: [
-                    BitMeunItem(
-                      icon: SvgPicture.asset("assets/svg/Add_Plus_Circle.svg"),
-                      onTap: () {},
-                      text: '创建群聊',
-                    ),
-                    BitMeunItem(
-                      icon: SvgPicture.asset("assets/svg/Expand.svg"),
-                      onTap: () {},
-                      text: '扫一扫',
-                    ),
-                  ]),
+                  const SizedBox(width: 4),
+                  MyMeun(
+                      context: context,
+                      offsetdy: 56,
+                      offsetWidth: 180,
+                      child: Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Icon(
+                          Icons.add,
+                          color: Color(0xFF1A1A1A),
+                          size: 20,
+                        ),
+                      ),
+                      items: [
+                        BitMeunItem(
+                          icon: SvgPicture.asset("assets/svg/Add_Plus_Circle.svg"),
+                          onTap: () {
+                            Get.to(() => const CreateGroupPage());
+                          },
+                          text: '创建群聊',
+                        ),
+                        BitMeunItem(
+                          icon: SvgPicture.asset("assets/svg/Expand.svg"),
+                          onTap: () {
+                            Get.to(() => const ScanPage());
+                          },
+                          text: '扫一扫',
+                        ),
+                      ]),
+                ],
+              ),
               actions: [
                 IconButton(
                   padding: const EdgeInsets.only(right: 12),
@@ -490,7 +516,9 @@ class _UserOptionPageState extends State<UserOptionPage>
           _buildBottomItem("setting", "设置", onTap: () {
             Get.to(() => const SettingsPage());
           }),
-          _buildBottomItem("mobile", "等级"),
+          _buildBottomItem("mobile", "等级", onTap: () {
+            Get.to(() => const UserInformationPage());
+          }),
           _buildBottomItem(
             isDarkMode ? "On" : "dark mode",
             isDarkMode ? "白天" : "夜间",

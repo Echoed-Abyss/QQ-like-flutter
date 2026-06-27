@@ -46,34 +46,37 @@ class _SearchMessageListPageState extends State<SearchMessageListPage>
             SizedBox(height: top + 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Hero(
-                tag: "Search",
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: BLMSerachField(
-                        "搜索",
-                        "colse",
-                        TextEditingController(),
-                        autofocus: true,
-                        icon: const Icon(Icons.search, color: Color(0xFF8A8A8E)),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    GestureDetector(
-                      onTap: () {
-                        Get.back();
-                      },
-                      child: const Text(
-                        "取消",
-                        style: TextStyle(
-                          color: Color(0xFF12B7F5),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
+              child: Material(
+                color: Colors.transparent,
+                child: Hero(
+                  tag: "Search",
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: BLMSerachField(
+                          "搜索",
+                          "colse",
+                          TextEditingController(),
+                          autofocus: true,
+                          icon: const Icon(Icons.search, color: Color(0xFF8A8A8E)),
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 12),
+                      GestureDetector(
+                        onTap: () {
+                          Get.back();
+                        },
+                        child: const Text(
+                          "取消",
+                          style: TextStyle(
+                            color: Color(0xFF12B7F5),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
