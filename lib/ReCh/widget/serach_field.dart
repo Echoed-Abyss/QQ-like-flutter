@@ -4,7 +4,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 
 class BLMSerachField extends StatefulWidget {
   final String hint;
@@ -45,7 +44,7 @@ class _SerachFieldState extends State<BLMSerachField> {
 
   Timer? time;
 
-  late bool phoneFormat = F;
+  late bool phoneFormat = false;
 
   @override
   void initState() {
@@ -136,7 +135,7 @@ class _SerachFieldState extends State<BLMSerachField> {
                     onPressed: () {
                       widget.controller.text = "";
 
-                      phoneFormat = F;
+                      phoneFormat = false;
                       setState(() {});
                     },
                   ),

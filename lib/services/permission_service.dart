@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:permission_handler/permission_handler.dart' as ph;
 
 class PermissionService {
   static final PermissionService _instance = PermissionService._internal();
@@ -8,7 +8,7 @@ class PermissionService {
 
   Future<bool> requestCameraPermission() async {
     try {
-      final status = await Permission.camera.request();
+      final status = await ph.Permission.camera.request();
       return status.isGranted;
     } catch (e) {
       if (kDebugMode) {
@@ -20,9 +20,9 @@ class PermissionService {
 
   Future<bool> requestPhotosPermission() async {
     try {
-      final status = await Permission.photos.request();
+      final status = await ph.Permission.photos.request();
       if (status.isGranted) return true;
-      final storageStatus = await Permission.storage.request();
+      final storageStatus = await ph.Permission.storage.request();
       return storageStatus.isGranted;
     } catch (e) {
       if (kDebugMode) {
@@ -34,7 +34,7 @@ class PermissionService {
 
   Future<bool> requestStoragePermission() async {
     try {
-      final status = await Permission.storage.request();
+      final status = await ph.Permission.storage.request();
       return status.isGranted;
     } catch (e) {
       if (kDebugMode) {
@@ -46,7 +46,7 @@ class PermissionService {
 
   Future<bool> requestNotificationPermission() async {
     try {
-      final status = await Permission.notification.request();
+      final status = await ph.Permission.notification.request();
       return status.isGranted;
     } catch (e) {
       if (kDebugMode) {
@@ -58,7 +58,7 @@ class PermissionService {
 
   Future<bool> requestMicrophonePermission() async {
     try {
-      final status = await Permission.microphone.request();
+      final status = await ph.Permission.microphone.request();
       return status.isGranted;
     } catch (e) {
       if (kDebugMode) {
@@ -71,10 +71,10 @@ class PermissionService {
   Future<Map<Permission, PermissionStatus>> requestAllPermissions() async {
     try {
       final permissions = [
-        Permission.camera,
-        Permission.photos,
-        Permission.notification,
-        Permission.microphone,
+        ph.Permission.camera,
+        ph.Permission.photos,
+        ph.Permission.notification,
+        ph.Permission.microphone,
       ];
       return await permissions.request();
     } catch (e) {
@@ -86,19 +86,19 @@ class PermissionService {
   }
 
   Future<bool> isCameraGranted() async {
-    return await Permission.camera.isGranted;
+    return await ph.Permission.camera.isGranted;
   }
 
   Future<bool> isPhotosGranted() async {
-    return await Permission.photos.isGranted ||
-        await Permission.storage.isGranted;
+    return await ph.Permission.photos.isGranted ||
+        await ph.Permission.storage.isGranted;
   }
 
   Future<bool> isNotificationGranted() async {
-    return await Permission.notification.isGranted;
+    return await ph.Permission.notification.isGranted;
   }
 
   Future<void> openAppSettings() async {
-    await openAppSettings();
+    await ph.openAppSettings();
   }
 }

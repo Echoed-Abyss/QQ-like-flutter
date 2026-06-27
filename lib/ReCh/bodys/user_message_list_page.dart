@@ -362,7 +362,7 @@ class _UserMessageListPageState extends State<UserMessageListPage>
                         ),
                         items: [
                           BitMeunItem(
-                            icon: SvgPicture.asset("assets/svg/ReCh.svg"),
+                            icon: SvgPicture.asset("assets/svg/Add_Plus_Circle.svg"),
                             onTap: () {},
                             text: '创建群聊',
                           ),

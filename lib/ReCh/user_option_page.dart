@@ -81,7 +81,7 @@ class _UserOptionPageState extends State<UserOptionPage>
                   ),
                   items: [
                     BitMeunItem(
-                      icon: SvgPicture.asset("assets/svg/ReCh.svg"),
+                      icon: SvgPicture.asset("assets/svg/Add_Plus_Circle.svg"),
                       onTap: () {},
                       text: '创建群聊',
                     ),
@@ -348,7 +348,7 @@ class _UserOptionPageState extends State<UserOptionPage>
               ],
             ),
           ),
-          bottomNavigationBar: _buildBottomBar(context, bottom),
+          bottomNavigationBar: _buildBottomBar(context, bottom, isDarkMode, appState.toggleDarkMode),
         );
       },
     );
@@ -469,7 +469,7 @@ class _UserOptionPageState extends State<UserOptionPage>
     );
   }
 
-  Widget _buildBottomBar(BuildContext context, double bottom) {
+  Widget _buildBottomBar(BuildContext context, double bottom, bool isDarkMode, VoidCallback toggleDarkMode) {
     return Container(
       margin: EdgeInsets.fromLTRB(16, 0, 16, bottom + 12),
       decoration: BoxDecoration(
@@ -495,7 +495,7 @@ class _UserOptionPageState extends State<UserOptionPage>
             isDarkMode ? "On" : "dark mode",
             isDarkMode ? "白天" : "夜间",
             onTap: () {
-              appState.toggleDarkMode();
+              toggleDarkMode();
             },
           ),
         ],
