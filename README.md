@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # flutter_qq
 
 这是一个使用Flutter实现模仿QQ的UI Demo
@@ -11,3 +12,7 @@
 
 Flutter SDK-3.16.3
 Dart SDK-3.2.3
+=======
+# QQ-like-flutter
+使用flutter模仿QQ
+>>>>>>> origin/trae/agent-12iciE
